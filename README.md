@@ -11,7 +11,7 @@ We've decided to use <b>Express</b> as our web framework, for these reasons:
 
 ### QA/Helpful Tools We Have Set up 
 
-* <b>Eslint</b> is the linter our group uses. We use it to automatically lint our code through the eslint plugin for vscode.
+* <b>Eslint</b> is the linter our group uses. We use it to automatically lint our code through the [eslint plugin for vscode](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint).
 
 * <b>npm-check</b> is the tool we use for detecting dependency updates. As it is meant to be installed globally through npm, we didn't include it in package.json
 

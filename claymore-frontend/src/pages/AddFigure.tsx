@@ -1,6 +1,6 @@
 import Header from "../components/Header";
 import "./AddFigure.css";
-import NewDonutForm from '../components/NewFigureForm';
+import NewFigureForm from '../components/NewFigureForm';
 
 function App() {
 
@@ -9,7 +9,7 @@ function App() {
       <Header />
       <div className="pageContent">
         <div className="payloadList">
-          <NewDonutForm />
+          <NewFigureForm />
         </div>
       </div>
     </div>

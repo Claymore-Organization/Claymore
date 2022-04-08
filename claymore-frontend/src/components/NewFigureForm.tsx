@@ -10,7 +10,7 @@ import Checkbox from '@mui/material/Checkbox';
 import {Button} from "@mui/material";
 import axios from 'axios';
 
-export default function NewDonutForm() {
+export default function NewFigureForm() {
   const [id, setId] = React.useState(-1);
   const [name, setName] = React.useState('');
   const [price, setPrice] = React.useState(-1.0);

@@ -37,6 +37,7 @@ export default function getMenuImage(name: string) {
   try {
     return menu[name].pic;
   } catch {
+    console.log(`${name} is missing a picture`)
     return menu["Default"].pic;
   }
 }

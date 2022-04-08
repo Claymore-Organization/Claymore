@@ -205,7 +205,7 @@ function App() {
     console.log(JSON.stringify(data));
     console.log(activeStep);
 
-    // ARRAY OF ITEMS NOT GETTING SAVED ON DATABASE
+    // Add the following code once DB is set up
     // try {
     //   console.log(JSON.stringify(data));
     //   const sendData = axios
