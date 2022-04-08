@@ -1,0 +1,25 @@
+.Payload {
+    display: inline-block;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    margin-bottom: 12px;
+  }
+  
+  .cardContent {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    text-align: left;
+    padding: 0;
+  }
+  
+  .info {
+    width: 70%
+  }
+  
+  .assignedDrone {
+    width: 30%;
+    align-items: center;
+    text-align: center;
+  }

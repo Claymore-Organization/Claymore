@@ -1,0 +1,46 @@
+.MenuItem {
+  display: inline-block;
+  align-items: center;
+  justify-content: center;
+  width: 49%;
+  margin-bottom: 12px;
+}
+
+.cardContent {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  text-align: left;
+  padding: 0;
+}
+
+.info {
+  width: 70%
+}
+
+.pic {
+  width: 30%;
+  align-items: center;
+}
+
+img {
+  border-radius: 5px;
+}
+
+.cardContent img {
+  flex-shrink: 0;
+  width: 100%
+}
+
+
+.quantityRow {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin-top: 12px;
+}
+
+.text {
+  padding: 8px;
+  width: 50%;
+}
