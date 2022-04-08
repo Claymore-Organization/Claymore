@@ -1,0 +1,58 @@
+.pageContent {
+  display: flex;
+  justify-content: flex-start;
+  padding-left: 5vw;
+  padding-right: 5vw;
+  padding-top: 80.5px;
+  text-align: left;
+}
+
+.menuHeader {
+  width: 100%;
+  padding-bottom: 12px;
+}
+
+.menuGrid {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  width: 70%;
+  padding-right: 20px;
+  padding-top: 20px;
+}
+
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  position: fixed;
+  right: 0;
+  width: 22%;
+  border-left: 1px solid #ddd;
+  text-align: left;
+  height: 85vh;
+  padding: 24px;
+  padding-right: 5vw;
+}
+
+.cartContainer {
+  margin-top: 12px;
+}
+
+.cartRow {
+  width: 100%;
+  display: flex;
+  border-bottom: 1px dashed black;
+
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
+
+.delivery {
+  margin-bottom: 12px;
+}
+
+.checkout {
+  margin-top: 12px;
+}
