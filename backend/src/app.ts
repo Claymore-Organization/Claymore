@@ -1,12 +1,11 @@
 import express, { Request, Response } from 'express';
 
 import config from '../config.json';
+import router from './routes';
 
 const app = express();
 
-app.get('/', (req: Request, res: Response) => {
-    res.send('Hello World')
-});
+app.use(router);
 
 app.listen(config.port, () => {
     console.log(`server is listening on port ${config.port}`)
