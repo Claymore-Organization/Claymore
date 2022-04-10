@@ -12,6 +12,7 @@ import MenuPage from './pages/Menu';
 import OrderPage from './pages/Order';
 import EmployeePage from './pages/Employee'
 import AddFigurePage from './pages/AddFigure'
+import NewPostPage from './pages/NewPost'
 
 import reportWebVitals from './reportWebVitals';
 import Forum from './pages/Forum';
@@ -25,6 +26,7 @@ ReactDOM.render(
       <Route path="order" element={<OrderPage />} />
       <Route path="employee" element={<EmployeePage />} />
       <Route path="addFigure" element={<AddFigurePage />} />
+      <Route path="newPost" element={<NewPostPage />} />
       <Route path="forum" element={<Forum />} />
     </Routes>
   </BrowserRouter>,

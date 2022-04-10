@@ -15,6 +15,9 @@ function App() {
         <p>
           <Link to="/addFigure">Employee Add Shop Item</Link>
         </p>
+        <p>
+          <Link to="/forum">Forum page</Link>
+        </p>
       </header>
     </div>
   );

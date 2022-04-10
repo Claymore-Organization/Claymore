@@ -5,6 +5,7 @@ import TempPosts from "../assets/postsData";
 import TempMessages from "../assets/messagesData";
 import Header from '../components/Header';
 import { Collapse } from '@geist-ui/core';
+import { useNavigate } from 'react-router-dom';
 
 interface Message {
     id: number,
@@ -25,6 +26,12 @@ interface Post {
 function Forum() {
   const [postList, setPostList] = useState<Array<Post>>([]);
   const [messagesList, setMessagesList] = useState<Array<Message>>([]);
+
+  const navigate = useNavigate();
+
+  function navigateNewPostPage() {
+      navigate('/newPost');
+  }
 
   async function fetchPosts() {
     try {
@@ -50,7 +57,7 @@ function Forum() {
       <Header />
       <Spacer h={6} />
 
-      <Button auto scale={1.5} type="success" style={{ textTransform: 'uppercase', fontWeight: 'bold', textAlign: 'center', paddingBottom: '60px', marginLeft: '36.5em'}}>New Post</Button>
+      <Button auto scale={1.5} type="success" style={{ textTransform: 'uppercase', fontWeight: 'bold', textAlign: 'center', paddingBottom: '60px', marginLeft: '36.5em'}} onClick={navigateNewPostPage}>New Post</Button>
 
       <Spacer h={2} />
 
