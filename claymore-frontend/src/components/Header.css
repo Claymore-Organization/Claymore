@@ -1,0 +1,32 @@
+.Header {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 8px;
+  border-bottom: 1px solid #ddd;
+  position: fixed;
+  z-index: 400;
+  top: 0px;
+  left: 0px;
+  width: 100vw;
+  background-color: white;
+}
+
+.logo {
+  height: 60px
+}
+
+.address {
+  position: absolute;
+  left: 5vw;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+}
+
+.editIcon {
+  margin-right: 8px;
+}

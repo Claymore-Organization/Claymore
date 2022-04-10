@@ -1,0 +1,20 @@
+version: '3'
+services:
+  claymore-frontend:
+    build: claymore-frontend
+    image: frontend:latest
+    # environment:
+    #   PORT: 3000
+    ports:
+      - "3000:3000"
+    depends_on:
+      - claymore-backend
+  claymore-backend:
+    build: claymore-backend
+    image: backend:latest
+    # environment:
+    #   PORT: 3001
+    expose:
+      - 3001
+    ports:
+      - "3001:3001"
