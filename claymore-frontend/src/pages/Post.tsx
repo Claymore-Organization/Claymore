@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 // component imports
-import { Grid, Text, Button, Spacer, Card, Divider, Image, Badge } from '@geist-ui/react';
+import { Grid, Text, Button, Spacer, Card, Divider, Image } from '@geist-ui/react';
 import { useParams } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import TempPosts from "../assets/postsData";
@@ -28,8 +28,6 @@ function PostPage() {
   const [messagesList, setMessagesList] = useState<Array<Message>>([]);
   const [post, setPost] = useState<Post>();
   const [newMessageContent, setNewMessageContent] = useState<string>('');
-
-  const navigate = useNavigate();
 
   async function fetchPosts() {
     try {
@@ -79,7 +77,6 @@ function PostPage() {
       const postMessageIds = post.messages;
       const messagesList = await fetchMessages(postMessageIds);
       setMessagesList(messagesList!)
-      
     };
     setup();
   }, [params.id]);
