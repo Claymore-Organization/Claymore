@@ -63,10 +63,12 @@ function PostPage() {
 
   async function getPost(id: number, postList: Array<Post>){
     // post passed in via link
-    const post = postList.find(p => p.id === id);
-    if(post !== undefined) {
+    const p = postList.find(p => p.id === id);
+    if(p !== undefined) {
       //console.log("post: ", post);
-      return post;
+      return p;
+    } else {
+        return {id: -1, user: -1, status: 'new', date_posted: new Date(), title: '', content: '', messages: []}
     }
   }
 
@@ -74,10 +76,11 @@ function PostPage() {
     const setup = async () => {
       const postList = await fetchPosts();
       const post = await getPost(Number(params.id), (postList as Array<Post>));
-      const postMessageIds = post?.messages;
-      const messagesList = await fetchMessages(postMessageIds!);
-      setMessagesList(messagesList!)
       setPost(post);
+      const postMessageIds = post.messages;
+      const messagesList = await fetchMessages(postMessageIds);
+      setMessagesList(messagesList!)
+      
     };
     setup();
   }, [params.id]);
