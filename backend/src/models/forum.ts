@@ -1,3 +1,9 @@
+export enum ForumStatus {
+    New = 'New',
+    InProgress = 'In Progress',
+    Finished = 'Finished',
+}
+
 export class ForumPost {
     id: string
     authorId: string
@@ -14,11 +20,11 @@ export class ForumPost {
 
 export class ForumThread {
     id: string
-    status: string
+    status: ForumStatus
     title: string
     posts: ForumPost[]
 
-    constructor(id: string, status: string, title: string) {
+    constructor(id: string, status: ForumStatus, title: string) {
         this.id = id;
         this.status = status;
         this.title = title;

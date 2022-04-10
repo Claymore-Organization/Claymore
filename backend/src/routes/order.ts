@@ -1,5 +1,5 @@
 import { Request, Response, Router } from "express";
-import { Order } from "../models/order";
+import { Order, OrderStatus } from "../models/order";
 
 const orderRouter = Router();
 
@@ -11,7 +11,7 @@ orderRouter.get('/', [], async function (req: Request, res: Response) {
     }
 
     try {
-        const order = new Order(orderId, 'customerId', [], 'address', 'New');
+        const order = new Order(orderId, 'customerId', [], 'address', OrderStatus.New);
         res.send(order);
     } catch (err) {
         console.log(err);

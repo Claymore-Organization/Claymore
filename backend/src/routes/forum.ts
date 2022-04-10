@@ -1,5 +1,5 @@
 import { Request, Response, Router } from "express";
-import { ForumThread } from "../models/forum";
+import { ForumStatus, ForumThread } from "../models/forum";
 
 const forumRouter = Router();
 
@@ -11,7 +11,7 @@ forumRouter.get('/', [], async function (req: Request, res: Response) {
     }
 
     try {
-        const forum = new ForumThread(forumId, 'New', 'Title');
+        const forum = new ForumThread(forumId, ForumStatus.New, 'Title');
         res.send(forum);
     } catch (err) {
         console.log(err);
