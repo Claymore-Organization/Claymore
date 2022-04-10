@@ -16,6 +16,7 @@ import NewPostPage from './pages/NewPost'
 
 import reportWebVitals from './reportWebVitals';
 import Forum from './pages/Forum';
+import Post from './pages/Post';
 
 ReactDOM.render(
   <BrowserRouter>
@@ -28,6 +29,9 @@ ReactDOM.render(
       <Route path="addFigure" element={<AddFigurePage />} />
       <Route path="newPost" element={<NewPostPage />} />
       <Route path="forum" element={<Forum />} />
+      <Route path="forum/post" element={<Post />}>
+          <Route path=":id" element={<Post />} />
+        </Route>
     </Routes>
   </BrowserRouter>,
   document.getElementById('root')

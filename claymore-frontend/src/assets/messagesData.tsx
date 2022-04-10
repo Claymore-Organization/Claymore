@@ -11,7 +11,7 @@ const messages = [
     },
     {
         id: 3,
-        user: 1,
+        user: 2,
         content: "Maybe red or blue"
     },
     {
@@ -21,12 +21,12 @@ const messages = [
     },
     {
         id: 5,
-        user: 1,
+        user: 2,
         content: "I like the black power ranger design"
     },
     {
         id: 6,
-        user: 1,
+        user: 4,
         content: "Ok I can make some sketches of a design"
     },
     {
