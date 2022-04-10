@@ -14,6 +14,7 @@ import EmployeePage from './pages/Employee'
 import AddFigurePage from './pages/AddFigure'
 
 import reportWebVitals from './reportWebVitals';
+import Forum from './pages/Forum';
 
 ReactDOM.render(
   <BrowserRouter>
@@ -24,6 +25,7 @@ ReactDOM.render(
       <Route path="order" element={<OrderPage />} />
       <Route path="employee" element={<EmployeePage />} />
       <Route path="addFigure" element={<AddFigurePage />} />
+      <Route path="forum" element={<Forum />} />
     </Routes>
   </BrowserRouter>,
   document.getElementById('root')
