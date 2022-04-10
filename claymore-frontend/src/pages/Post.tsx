@@ -63,13 +63,12 @@ function PostPage() {
 
   async function getPost(id: number, postList: Array<Post>){
     // post passed in via link
-    const p = postList.find(p => p.id === id);
-    if(p !== undefined) {
+    const post = postList.find(p => p.id === id);
+    if(post !== undefined) {
       //console.log("post: ", post);
-      return p;
-    } else {
-        return {id: -1, user: -1, status: 'new', date_posted: new Date(), title: '', content: '', messages: []}
-    }
+      return post;
+    } 
+    return {id: -1, user: -1, status: 'new', date_posted: new Date(), title: '', content: '', messages: []}
   }
 
   useEffect(() => {
@@ -104,10 +103,14 @@ function PostPage() {
   }
 
   function getFormattedDate () {
-    const date = post?.date_posted.toString();
-    const month = date?.substring(4, 7);
-    const day = date?.substring(8, 10);
-    const year = date?.substring(11, 15);
+    if(post === undefined){
+        return 'May 30, 2022'
+    }
+
+    const date = post.date_posted.toString();
+    const month = date.substring(4, 7);
+    const day = date.substring(8, 10);
+    const year = date.substring(11, 15);
     return month + " " + day + ", " + year;
   }
 
