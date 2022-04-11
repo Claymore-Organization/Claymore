@@ -24,6 +24,8 @@ Claymore/frontend$ npm run local
 
 ### Deployment
 
+You'll need to create a .env file with the correct variables, and have access to firebase see private discussions on slack.
+
 You can test before deploying with
 
 ```bash
