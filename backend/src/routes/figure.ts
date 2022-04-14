@@ -15,7 +15,10 @@ figureRouter.get('/', [], async function (req: Request, res: Response) {
             // TODO: add query to find figure by id
             const figure = TEMP_DB[figureId];
             if (figure) {
-                res.send(figure);
+                const data = {
+                    [figureId]: figure
+                };
+                res.send(data);
             }
             else {
                 res.status(404).send('Figure not found');

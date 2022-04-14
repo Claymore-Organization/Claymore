@@ -15,7 +15,10 @@ userRouter.get('/', [], async function (req: Request, res: Response) {
             // TODO: add query to find user by id
             const user = TEMP_DB[userId];
             if (user) {
-                res.send(user);
+                const data = {
+                    [userId]: user
+                };
+                res.send(data);
             }
             else {
                 res.status(404).send('User not found');
