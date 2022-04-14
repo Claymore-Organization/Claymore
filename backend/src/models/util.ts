@@ -1,4 +1,4 @@
-export type props = { [key:string]: string|number|boolean }
+export type props = { [key:string]: string|number|boolean|Date }
 
 export abstract class Serializable {
     abstract empty(): object;
