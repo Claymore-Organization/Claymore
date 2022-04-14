@@ -25,7 +25,7 @@ userRouter.get('/', [], async function (req: Request, res: Response) {
             }
         } else {
             // TODO: add query for all users
-            const users = TEMP_USER_DB
+            const users = TEMP_USER_DB;
             res.send(users);
         }
     } catch (err) {

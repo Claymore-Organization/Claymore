@@ -1,33 +1,53 @@
+import { props, Serializable } from "./util"
+
 export enum ForumStatus {
     New = 'New',
     InProgress = 'In Progress',
     Finished = 'Finished',
 }
 
-export class ForumPost {
-    id: string
+export interface ForumPostInterface {
     authorId: string
     datePosted: Date
     content: string
+}
 
-    constructor(id: string, authorId: string, datePosted: Date, content: string) {
-        this.id = id;
-        this.authorId = authorId;
-        this.datePosted = datePosted;
-        this.content = content;
+export class ForumPost extends Serializable implements ForumPostInterface {
+    authorId = ''
+    datePosted = new Date()
+    content = ''
+
+    constructor(data: props) {
+        super();
+        Object.assign(this, super.getProps(data));
+    }
+
+    empty() {
+        return new ForumPost({});
     }
 }
 
-export class ForumThread {
-    id: string
-    status: ForumStatus
+export interface ForumThreadInterface {
     title: string
-    posts: ForumPost[]
+    status: ForumStatus
+    posts: ForumPostInterface[]
+}
 
-    constructor(id: string, status: ForumStatus, title: string) {
-        this.id = id;
-        this.status = status;
-        this.title = title;
-        this.posts = [];
+export class ForumThread extends Serializable implements ForumThreadInterface {
+    title = ''
+    status = ForumStatus.New
+    posts: ForumPostInterface[] = []
+
+    constructor(data: props) {
+        super();
+        Object.assign(this, super.getProps(data));
+    }
+
+    empty() {
+        return new ForumThread({});
+    }
+
+    addPost(post: ForumPost) {
+        this.posts.push(post);
     }
 }
