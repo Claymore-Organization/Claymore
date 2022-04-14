@@ -37,11 +37,11 @@ figureRouter.get('/', [], async function (req: Request, res: Response) {
 figureRouter.post('/', [], async function (req: Request, res: Response) {
     // TODO: insert new figure
     const newFigure = new Figure(req.body);
-    const newId = 'figure3';
-    const figure = {
-        [newId]: newFigure
+    const figureId = 'figure3';
+    const data = {
+        [figureId]: newFigure
     };
-    res.send(figure);
+    res.send(data);
 });
 
 export default figureRouter;

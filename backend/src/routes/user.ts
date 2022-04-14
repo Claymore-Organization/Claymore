@@ -3,9 +3,9 @@ import { User } from "../models/user";
 
 const userRouter = Router();
 
-const TEMP_DB: { [key:string]: User } = {
-    'user1': new User({username: 'testuser1', image: 'image URL'}),
-    'user2': new User({username: 'testuser2', image: 'image URL'})
+export const TEMP_USER_DB: { [key:string]: User } = {
+    'user1': new User({username: 'testuser1', image: 'image URL', orders: ['order1']}),
+    'user2': new User({username: 'testuser2', image: 'image URL', orders: ['order2']})
 }
 
 userRouter.get('/', [], async function (req: Request, res: Response) {
@@ -13,7 +13,7 @@ userRouter.get('/', [], async function (req: Request, res: Response) {
     try {
         if (userId) {
             // TODO: add query to find user by id
-            const user = TEMP_DB[userId];
+            const user = TEMP_USER_DB[userId];
             if (user) {
                 const data = {
                     [userId]: user
@@ -25,7 +25,7 @@ userRouter.get('/', [], async function (req: Request, res: Response) {
             }
         } else {
             // TODO: add query for all users
-            const users = TEMP_DB
+            const users = TEMP_USER_DB
             res.send(users);
         }
     } catch (err) {
