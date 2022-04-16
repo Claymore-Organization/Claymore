@@ -37,7 +37,9 @@ orderRouter.get('/', [], async function (req: Request, res: Response) {
                 res.status(404).send('User not found');
             }
         } else {
-            res.status(400).send('Param orderId or userId is missing');
+            // TODO: add query to find all orders
+            const orders = TEMP_ORDER_DB;
+            res.send(orders);
         }
     } catch (err) {
         console.log(err);
