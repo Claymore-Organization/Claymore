@@ -1,11 +1,22 @@
-export class User {
-  id: string;
-  username: string;
-  image: string;
+import { props, Serializable } from "./util";
 
-  constructor(id: string, username: string, image: string) {
-    this.id = id;
-    this.username = username;
-    this.image = image;
-  }
+export interface UserInterface {
+    username: string
+    image: string
+    orders: string[]
+}
+
+export class User extends Serializable {
+    username = ''
+    image = ''
+    orders = []
+
+    constructor(data: props) {
+        super();
+        Object.assign(this, super.getProps(data));
+    }
+
+    empty() {
+        return new User({});
+    }
 }

@@ -1,28 +1,36 @@
+import { props, Serializable } from "./util"
+
 interface ItemQuantity {
     itemId: string
     quantity: number
 }
 
 export enum OrderStatus {
-    New = "New",
-    InProgress = "In Progress",
-    Shipped = "Shipped",
-    Finished = "Finished",
+    New = 'New',
+    InProgress = 'In Progress',
+    Shipped = 'Shipped',
+    Finished = 'Finished',
 }
 
-export class Order {
-  id: string;
-  customerId: string;
-  items: ItemQuantity[];
-  address: string;
-  status: OrderStatus;
+export interface OrderInterface {
+    customerId: string
+    items: ItemQuantity[]
+    address: string
+    status: OrderStatus
+}
 
-  constructor(id: string, customerId: string,
-      items: ItemQuantity[], address: string, status: OrderStatus) {
-    this.id = id;
-    this.customerId = customerId;
-    this.items = items;
-    this.address = address;
-    this.status = status;
-  }
+export class Order extends Serializable implements OrderInterface {
+    customerId = ''
+    items = []
+    address = ''
+    status = OrderStatus.New
+
+    constructor(data: props) {
+        super();
+        Object.assign(this, super.getProps(data));
+    }
+
+    empty() {
+        return new Order({});
+    }
 }
