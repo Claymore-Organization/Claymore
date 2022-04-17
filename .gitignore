@@ -164,3 +164,4 @@ backend/src/**/*.js
 backend/scripts/**/*.js
 backend/test/**/*.js
 backend/config.json
+claymore-frontend/package-lock.json
