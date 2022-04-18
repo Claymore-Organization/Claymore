@@ -7,91 +7,131 @@ import TempPosts from "../assets/postsData";
 import TempMessages from "../assets/messagesData";
 import Header from '../components/Header';
 
-interface Message {
-    id: number,
-    user: number,
-    content: string,
+// interface Message {
+//     id: number,
+//     user: number,
+//     content: string,
+// }
+
+// interface Post {
+//     id: number,
+//     user: number,
+//     status: string,
+//     date_posted: Date,
+//     title: string,
+//     content: string,
+//     messages: number[]
+// }
+
+interface ForumPost {
+  authorId: string
+  datePosted: Date
+  content: string
 }
 
-interface Post {
-    id: number,
-    user: number,
-    status: string,
-    date_posted: Date,
-    title: string,
+interface ForumThread {
+    id: string,
+    authorId: string,
+    datePosted: Date,
     content: string,
-    messages: number[]
+    title: string,
+    status: string,
+    posts: ForumPost[]
 }
 
 function PostPage() {
   const params = useParams();
-  const [messagesList, setMessagesList] = useState<Array<Message>>([]);
-  const [post, setPost] = useState<Post>();
+  // const [messagesList, setMessagesList] = useState<Array<ForumPost>>([]);
+  const [post, setPost] = useState<ForumThread>();
   const [newMessageContent, setNewMessageContent] = useState<string>('');
 
-  async function fetchPosts() {
+  async function fetchPost(id : string){
     try {
-      //const response = await fetch('/posts').then((res) => (res.json()));
-      // console.log(response);
-      //setPostList(response);
-
+      let response = await fetch(`http://localhost:5001/claymore-d6749/us-central1/default/forum?forumId=${id}`).then((res) => (res.json()));
+      console.log(response);
+      if(response === undefined){
+        response = {id: "-1", authorId: "-1", status: 'new', datePosted: new Date(), title: '', content: '', posts: []}
+      }
+      setPost(response);
     //   setMessagesList(TempMessages);
-      const response = TempPosts;
-      return response;
+      // const response = TempMessages.filter(msg => postMessageIds.includes(msg.id));
+      // return response;
       
     } catch (e) {
+      setPost({id: "-1", authorId: "-1", status: 'new', datePosted: new Date(), title: '', content: '', posts: []})
       console.error(e);
     }
+    
   }
 
-  async function fetchMessages(postMessageIds : number[]) {
-    try {
-      //const response = await fetch('/posts').then((res) => (res.json()));
-      // console.log(response);
-      //setPostList(response);
-
-    //   setMessagesList(TempMessages);
-      const response = TempMessages.filter(msg => postMessageIds.includes(msg.id));
-      return response;
+  // async function fetchPosts() {
+  //   try {
+  //     //const response = await fetch('/posts').then((res) => (res.json()));
+  //     // console.log(response);
+  //     //setPostList(response);
       
-    } catch (e) {
-      console.error(e);
-    }
-  }
 
-  async function getPost(id: number, postList: Array<Post>){
-    // post passed in via link
-    const post = postList.find(p => p.id === id);
-    if(post !== undefined) {
-      //console.log("post: ", post);
-      return post;
-    } 
-    return {id: -1, user: -1, status: 'new', date_posted: new Date(), title: '', content: '', messages: []}
-  }
+  //   //   setMessagesList(TempMessages);
+  //     const response = TempPosts;
+  //     return response;
+      
+  //   } catch (e) {
+  //     console.error(e);
+  //   }
+  // }
+
+  // async function fetchMessages(postMessageIds : number[]) {
+  //   try {
+  //     //const response = await fetch('/posts').then((res) => (res.json()));
+  //     // console.log(response);
+  //     //setPostList(response);
+
+  //   //   setMessagesList(TempMessages);
+  //     const response = TempMessages.filter(msg => postMessageIds.includes(msg.id));
+  //     return response;
+      
+  //   } catch (e) {
+  //     console.error(e);
+  //   }
+  // }
+
+  // async function getPost(id: number, postList: Array<ForumThread>){
+  //   // post passed in via link
+  //   const post = postList.find(p => p.id === id);
+  //   if(post !== undefined) {
+  //     //console.log("post: ", post);
+  //     return post;
+  //   } 
+  //   return {id: -1, user: -1, status: 'new', date_posted: new Date(), title: '', content: '', messages: []}
+  // }
 
   useEffect(() => {
     const setup = async () => {
-      const postList = await fetchPosts();
-      const post = await getPost(Number(params.id), (postList as Array<Post>));
-      setPost(post);
-      const postMessageIds = post.messages;
-      const messagesList = await fetchMessages(postMessageIds);
-      setMessagesList(messagesList!)
+      const postId = "forum" + (params.id);
+      await fetchPost(postId);
+      
+
+      // const postList = await fetchPosts();
+      // const post = await getPost(Number(params.id), (postList as Array<Post>));
+      // setPost(post);
+      // const postMessageIds = post.messages;
+      // const messagesList = await fetchMessages(postMessageIds);
+      // setMessagesList(messagesList!)
     };
     setup();
   }, [params.id]);
 
-  function getUserName(userID : number){
-    if(userID === 1){
+  function getUserName(userID : string){
+    if(userID === "user1"){
         return "Max Dunaevschi";
     }
-    else if(userID === 2){
+    else if(userID === "user2"){
         return "Gabriel Magendzo";
     }
-    else if(userID === 3){
+    else if(userID === "user3"){
         return "Oscar Kav";
     }
-    else if(userID === 4){
+    else if(userID === "user4"){
         return "Achilles Ecos";
     }
     else {
@@ -104,7 +144,7 @@ function PostPage() {
         return 'May 30, 2022'
     }
 
-    const date = post.date_posted.toString();
+    const date = post.datePosted.toString();
     const month = date.substring(4, 7);
     const day = date.substring(8, 10);
     const year = date.substring(11, 15);
@@ -142,13 +182,13 @@ function PostPage() {
         </Card.Content>
         </Card>
         <Spacer h={0.5} />
-        {messagesList
-            ? messagesList.map((msg) => {
+        {post?.posts
+            ? post.posts.map((msg) => {
                 return (
                     <>
                     <Card width="90%" style={{marginLeft: '4em'}}>
                         <Card.Content>
-                            <Text small>{getUserName(msg.user)}</Text>
+                            <Text small>{getUserName(msg.authorId)}</Text>
                             <Text h3>{msg.content}</Text>
                         </Card.Content>
                     </Card>

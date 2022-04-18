@@ -1,36 +1,56 @@
 import { Text, Card, Spacer, Image } from '@geist-ui/react';
 import { Link } from "react-router-dom";
 
-interface Post {
-    id: number,
-    user: number,
-    status: string,
-    date_posted: Date,
-    title: string,
+// interface Post {
+//     id: number,
+//     user: number,
+//     status: string,
+//     date_posted: Date,
+//     title: string,
+//     content: string,
+//     messages: number[]
+// }
+
+// interface PostItemProps {
+//     post: Post
+// }
+
+interface ForumPost {
+    authorId: string
+    datePosted: Date
+    content: string
+  }
+  
+
+interface ForumThread {
+    id: string,
+    authorId: string,
+    datePosted: Date,
     content: string,
-    messages: number[]
+    title: string,
+    status: string,
+    posts: ForumPost[]
 }
 
 interface PostItemProps {
-    post: Post
+    post: ForumThread
 }
-
 
 
 const ForumPost = (props: PostItemProps) => {
   const { post } = props;
 
   function getUserName(){
-    if(post.user === 1){
+    if(post.authorId === "user1"){
         return "Max Dunaevschi"
     }
-    else if(post.user === 2){
+    else if(post.authorId === "user2"){
         return "Gabriel Magendzo"
     }
-    else if(post.user === 3){
+    else if(post.authorId === "user3"){
         return "Oscar Kav"
     }
-    else if(post.user === 4){
+    else if(post.authorId === "user4"){
         return "Achilles Ecos"
     }
     else {
