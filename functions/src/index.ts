@@ -11,21 +11,9 @@ import { getUsers } from "./routes/user";
 
 // Start writing Firebase Functions
 // https://firebase.google.com/docs/functions/typescript
-// import router from "./routes";
 const app = express();
-// app.use(router);
 app.use(cors({origin: true}));
-// const firebasePort = 3000;
 
-// const corsOptions ={
-//   origin:'*',
-//   credentials:true,            //access-control-allow-credentials:true
-//   optionSuccessStatus:200,
-// }
-
-// app.listen(firebasePort, () => {
-//   console.log("server is listening at http://localhost:" + firebasePort);
-// });
 app.get("/", (req, res) => {
   res.send("hello worldy");
 });

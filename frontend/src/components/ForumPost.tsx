@@ -15,6 +15,13 @@ import { Link } from "react-router-dom";
 //     post: Post
 // }
 
+interface User {
+    id: string,
+    username: string,
+    image: string,
+    orders: string[]
+}
+
 interface ForumPost {
     authorId: string
     datePosted: Date
@@ -40,22 +47,33 @@ interface PostItemProps {
 const ForumPost = (props: PostItemProps) => {
   const { post } = props;
 
-  function getUserName(){
-    if(post.authorId === "user1"){
-        return "Max Dunaevschi"
+  async function fetchUser(){
+    try {
+        const response = await fetch(`http://localhost:5001/claymore-d6749/us-central1/default/user?userId=${post.authorId}`).then((res) => (res.json()));
+        // console.log(response);
+        Object.keys(response).forEach(function(key) {
+            const user = {
+              id: key,
+              username: response[key]["username"],
+              image: response[key]["image"],
+              orders: response[key]["orders"],
+            };
+          });
+        return response
+
+      } catch (e) {
+        console.error(e);
+        return undefined;
+      }
+  }
+
+  async function getUserName(){
+    const user = await fetchUser();
+    console.log(user);
+    if(user === undefined){
+        return "Undefined User";
     }
-    else if(post.authorId === "user2"){
-        return "Gabriel Magendzo"
-    }
-    else if(post.authorId === "user3"){
-        return "Oscar Kav"
-    }
-    else if(post.authorId === "user4"){
-        return "Achilles Ecos"
-    }
-    else {
-        return "Gialon Kasha"
-    }
+    return user.username;
   }
 
   return (

@@ -42,12 +42,6 @@ interface ForumThread {
 function Forum() {
   const [postList, setPostList] = useState<Array<ForumThread>>([]);
   const [messagesList, setMessagesList] = useState<Array<ForumPost>>([]);
-  const headers = new Headers();
-
-  headers.append("Access-Control-Allow-Origin", "*");
-  headers.append("Access-Control-Allow-Credentials", "true");
-  headers.append("Access-Control-Allow-Methods", "GET,HEAD,OPTIONS,POST,PUT");
-  headers.append("Access-Control-Allow-Headers", "Access-Control-Allow-Headers, Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers");
 
   const navigate = useNavigate();
 
@@ -58,13 +52,21 @@ function Forum() {
   async function fetchPosts() {
     try {
       const response = await fetch('http://localhost:5001/claymore-d6749/us-central1/default/forum').then((res) => (res.json()));
-      console.log(response);
-      setPostList(response);
-
-
-      // setPostList(TempPosts);
-      // setMessagesList(TempMessages);
-      
+      // console.log(response);
+      const postObjList : Array<ForumThread> = [];
+      Object.keys(response).map(function(key) {
+        postObjList.push({
+          id: key,
+          authorId: response[key]["authorId"],
+          datePosted: response[key]["datePosted"],
+          content: response[key]["content"],
+          title: response[key]["title"],
+          status: response[key]["status"],
+          posts: response[key]["posts"]
+        });
+      });
+      console.log(postObjList);
+      setPostList(postObjList);
     } catch (e) {
       console.error(e);
     }
