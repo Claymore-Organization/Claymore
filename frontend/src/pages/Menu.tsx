@@ -24,7 +24,7 @@ interface MenuItem {
 
 function App() {
   const [cart, setCart] = useState<Array<CartItem>>([]);
-  const [menu, setMenu] = useState<Array<MenuItem>>([]);
+  const [menu, setMenu] = useState<Map<string, MenuItem>>([]);
 
   async function fetchMenu() {
     try {
@@ -45,13 +45,13 @@ function App() {
     currency: "USD",
   });
 
-  function getName(itemId: number) {
-    const item = menu.filter((item) => item.id == itemId)[0];
+  function getName(itemId: string) {
+    const item = menu[itemId];
     return item.name;
   }
 
-  function getPrice(itemId: number) {
-    const item = menu.filter((item) => item.id == itemId)[0];
+  function getPrice(itemId: string) {
+    const item = menu[itemId];
     return item.price;
   }
 
@@ -71,11 +71,12 @@ function App() {
           <Typography variant="h4" className="menuHeader">
             Figures
           </Typography>
-          {menu.map((item: MenuItem) => {
-            if (item.classic) {
+          {Object.keys(menu).map((key: string) => {
+            const item: MenuItem = menu[key]
+            if (item.present) {
               return (
                 <MenuItem
-                  itemId={item.id}
+                  itemId={key}
                   name={item.name}
                   price={item.price}
                   image={getMenuImage(item.name)}
@@ -89,8 +90,8 @@ function App() {
           <Typography variant="h4" className="menuHeader">
             Pre-orders
           </Typography>
-          {menu.map((item: MenuItem) => {
-            if (!item.classic) {
+          {Object.values(menu).map((item: MenuItem) => {
+            if (!item.present) {
               return (
                 <MenuItem
                   itemId={item.id}

@@ -45,7 +45,7 @@ function App() {
     currency: "USD",
   });
 
-  const [menu, setMenu] = useState<Array<MenuItem>>([]);
+  const [menu, setMenu] = useState<Map<string, MenuItem>>({});
   const [firstname, setFirstname] = useState<string>("Michael")
   const [lastname, setLastname] = useState<string>("Hilton")
   const [address, setAddress] = useState<string>("5000 Forbes Ave")
@@ -56,10 +56,9 @@ function App() {
 
   async function fetchMenu() {
     try {
-      const response = figureMenu; 
-      // await fetch(
-      //   ""
-      // ).then((res) => res.json());
+      const response = await fetch(
+        "https://us-central1-claymore-d6749.cloudfunctions.net/default/figure"
+      ).then((res) => res.json());
       setMenu(response);
     } catch (e) {
       console.error(e);
@@ -70,13 +69,13 @@ function App() {
     fetchMenu();
   }, []);
 
-  function getPrice(itemId: number) {
-    const item = menu.filter((item) => item.id == itemId)[0];
+  function getPrice(itemId: string) {
+    const item = menu[itemId];
     return item.price;
   }
 
-  function getName(itemId: number) {
-    const item = menu.filter((item) => item.id == itemId)[0];
+  function getName(itemId: string) {
+    const item = menu[itemId];
     return item.name;
   }
 

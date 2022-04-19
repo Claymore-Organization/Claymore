@@ -17,7 +17,7 @@ const TEMP_ORDER_DB: { [key:string]: Order } = {
   }),
 };
 
-export async function getOrders(req: Request, res: Response){
+export async function getOrders(req: Request, res: Response) {
   const orderId = req.query.orderId?.toString();
   const userId = req.query.userId?.toString();
   try {
@@ -93,7 +93,7 @@ export async function getOrders(req: Request, res: Response){
 //   }
 // });
 
-export async function postOrder(req: Request, res: Response){
+export async function postOrder(req: Request, res: Response) {
   const orderId = req.query.orderId?.toString();
   if (orderId) {
     // TODO: Update existing order
