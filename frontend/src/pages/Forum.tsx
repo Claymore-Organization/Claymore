@@ -7,25 +7,41 @@ import Header from '../components/Header';
 import { Collapse } from '@geist-ui/core';
 import { useNavigate } from 'react-router-dom';
 
-interface Message {
-    id: number,
-    user: number,
-    content: string,
-}
+// interface Message {
+//     id: number,
+//     user: number,
+//     content: string,
+// }
+
+// interface Post {
+//     id: number,
+//     user: number,
+//     status: string,
+//     date_posted: Date,
+//     title: string,
+//     content: string,
+//     messages: number[]
+// }
 
 interface Post {
-    id: number,
-    user: number,
-    status: string,
-    date_posted: Date,
-    title: string,
-    content: string,
-    messages: number[]
+  authorId: string
+  datePosted: Date
+  content: string
+}
+
+interface ForumThread {
+  id: string,
+  authorId: string,
+  datePosted: Date,
+  content: string,
+  title: string,
+  status: string,
+  posts: Post[]
 }
 
 function Forum() {
-  const [postList, setPostList] = useState<Array<Post>>([]);
-  const [messagesList, setMessagesList] = useState<Array<Message>>([]);
+  const [postList, setPostList] = useState<Array<ForumThread>>([]);
+  const [messagesList, setMessagesList] = useState<Array<ForumPost>>([]);
 
   const navigate = useNavigate();
 
@@ -35,13 +51,22 @@ function Forum() {
 
   async function fetchPosts() {
     try {
-      //const response = await fetch('/posts').then((res) => (res.json()));
+      const response = await fetch('http://localhost:5001/claymore-d6749/us-central1/default/forum').then((res) => (res.json()));
       // console.log(response);
-      //setPostList(response);
-
-      setPostList(TempPosts);
-      setMessagesList(TempMessages);
-      
+      const postObjList : Array<ForumThread> = [];
+      Object.keys(response).map(function(key) {
+        postObjList.push({
+          id: key,
+          authorId: response[key]["authorId"],
+          datePosted: response[key]["datePosted"],
+          content: response[key]["content"],
+          title: response[key]["title"],
+          status: response[key]["status"],
+          posts: response[key]["posts"]
+        });
+      });
+      console.log(postObjList);
+      setPostList(postObjList);
     } catch (e) {
       console.error(e);
     }
@@ -64,9 +89,9 @@ function Forum() {
       <Collapse.Group>
       <Collapse title="My Posts" initialVisible={true}>
         {postList
-          ? postList.filter(post => post.user === 1).sort(function(o1, o2) {
-            if(o1.date_posted > o2.date_posted) return -1;
-            if(o1.date_posted < o2.date_posted) return 1;
+          ? postList.filter(post => post.authorId === "author1").sort(function(o1, o2) {
+            if(o1.datePosted > o2.datePosted) return -1;
+            if(o1.datePosted < o2.datePosted) return 1;
             return 0;
           }).map((post) => {
               return (

@@ -1,41 +1,79 @@
 import { Text, Card, Spacer, Image } from '@geist-ui/react';
 import { Link } from "react-router-dom";
 
-interface Post {
-    id: number,
-    user: number,
-    status: string,
-    date_posted: Date,
-    title: string,
+// interface Post {
+//     id: number,
+//     user: number,
+//     status: string,
+//     date_posted: Date,
+//     title: string,
+//     content: string,
+//     messages: number[]
+// }
+
+// interface PostItemProps {
+//     post: Post
+// }
+
+interface User {
+    id: string,
+    username: string,
+    image: string,
+    orders: string[]
+}
+
+interface ForumPost {
+    authorId: string
+    datePosted: Date
+    content: string
+  }
+  
+
+interface ForumThread {
+    id: string,
+    authorId: string,
+    datePosted: Date,
     content: string,
-    messages: number[]
+    title: string,
+    status: string,
+    posts: ForumPost[]
 }
 
 interface PostItemProps {
-    post: Post
+    post: ForumThread
 }
-
 
 
 const ForumPost = (props: PostItemProps) => {
   const { post } = props;
 
-  function getUserName(){
-    if(post.user === 1){
-        return "Max Dunaevschi"
+  async function fetchUser(){
+    try {
+        const response = await fetch(`http://localhost:5001/claymore-d6749/us-central1/default/user?userId=${post.authorId}`).then((res) => (res.json()));
+        // console.log(response);
+        Object.keys(response).forEach(function(key) {
+            const user = {
+              id: key,
+              username: response[key]["username"],
+              image: response[key]["image"],
+              orders: response[key]["orders"],
+            };
+          });
+        return response
+
+      } catch (e) {
+        console.error(e);
+        return undefined;
+      }
+  }
+
+  async function getUserName(){
+    const user = await fetchUser();
+    console.log(user);
+    if(user === undefined){
+        return "Undefined User";
     }
-    else if(post.user === 2){
-        return "Gabriel Magendzo"
-    }
-    else if(post.user === 3){
-        return "Oscar Kav"
-    }
-    else if(post.user === 4){
-        return "Achilles Ecos"
-    }
-    else {
-        return "Gialon Kasha"
-    }
+    return user.username;
   }
 
   return (
