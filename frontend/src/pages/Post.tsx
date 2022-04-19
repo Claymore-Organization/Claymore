@@ -26,7 +26,6 @@ import posts from '../assets/postsData';
 // }
 
 interface User {
-  id: string,
   username: string,
   image: string,
   orders: string[]
@@ -39,39 +38,48 @@ interface ForumPost {
 }
 
 interface ForumThread {
-    authorId: string,
-    datePosted: Date,
-    content: string,
-    title: string,
-    status: string,
-    posts: ForumPost[]
+  authorId: string,
+  datePosted: Date,
+  content: string,
+  title: string,
+  status: string,
+  posts: ForumPost[]
 }
 
 const EmptyForumThread: ForumThread = {
-  authorId: '',
+  authorId: 'Undefined User',
   datePosted: new Date(),
-  content: '',
-  title: 'test',
-  status: '',
+  content: 'Base post content',
+  title: 'Default post',
+  status: 'New',
   posts: []
 };
+
+interface MenuItem {
+  id: number;
+  name: string;
+  price: number;
+  classic: boolean;
+}
 
 function PostPage() {
   const params = useParams();
   // const [messagesList, setMessagesList] = useState<Array<ForumPost>>([]);
   // const [post, setPost] = useState<ForumThread>();
-  const [post, setPost] = useState<ForumThread>();
+  const [post, setPost] = useState<ForumThread>(EmptyForumThread);
   const [newMessageContent, setNewMessageContent] = useState<string>('');
   const [postId, setPostId] = useState<string>('');
   // const [userList, setUserList] = useState<Array<User>>([]);
-  const [userMap, setUserMap] = useState<Map<string, User>>(new Map());
+  const [userMap, setUserMap] = useState<Map<string, User>>(new Map<string, User>());
 
   async function fetchPost(id : string){
     console.log("getting post with id: " + id);
     try {
       const response = await fetch(`http://localhost:5001/claymore-d6749/us-central1/default/forum?forumId=${id}`).then((res) => (res.json()));
       console.log(response);
-      const p : Map<string, ForumThread> = response;
+      const p = response[id] as ForumThread;
+      // const p : Map<string, ForumThread> = response as Map<string, ForumThread>;
+      // console.log(p);
       return p;
       // setPost(response); // FIX THIS: MAKE post a MAP string -> ForumThread
     //   setMessagesList(TempMessages);
@@ -81,9 +89,9 @@ function PostPage() {
     } catch (e) {
       // setPost({id: "-1", authorId: "-1", status: 'new', datePosted: new Date(), title: '', content: '', posts: []})
       console.error(e);
-      const m = new Map();
-      m.set("forumtest", EmptyForumThread);
-      return m;
+      // const m = new Map();
+      // m.set("forumtest", EmptyForumThread);
+      return EmptyForumThread;
     }
     
   }
@@ -92,19 +100,20 @@ function PostPage() {
     try {
       const response = await fetch('http://localhost:5001/claymore-d6749/us-central1/default/user').then((res) => (res.json()));
       console.log(response);
-      setUserMap(response);
+      // setUserMap(response);
+
       // console.log(response);
-      // const userObjList : Array<User> = [];
-      // Object.keys(response).forEach(function(key) {
-      //   userObjList.push({
-      //     id: key,
-      //     username: response[key]["username"],
-      //     image: response[key]["image"],
-      //     orders: response[key]["orders"]
-      //   } as User);
-      // });
+      const userObjMap : Map<string, User> = new Map<string, User>();
+      Object.keys(response).forEach(function(key) {
+        userObjMap.set(key, {
+          username: response[key]["username"],
+          image: response[key]["image"],
+          orders: response[key]["orders"]
+        } as User);
+      });
       // console.log(userObjList);
       // setUserList(userObjList);
+      setUserMap(userObjMap);
     } catch (e) {
       console.error(e);
     }
@@ -156,8 +165,7 @@ function PostPage() {
       const postId = "" + (params.id);
       setPostId(postId);
       const p = await fetchPost(postId);
-      const postVal : ForumThread = p.get(postId);
-      setPost(postVal);
+      setPost(p);
       await fetchUsers();
 
       // const postList = await fetchPosts();
@@ -172,9 +180,13 @@ function PostPage() {
 
   function getUserName(userID : string){
     // const userObj = userList.find(u => u.id === userID);
+    if(userMap === undefined){
+      return "Undefined User bc map";
+    }
+    console.log(userID);
     const userObj = userMap.get(userID);
     if(userObj === undefined){
-      return "Undefined User";
+      return "Undefined User bc field";
     }
     return userObj.username;
   }
@@ -182,9 +194,9 @@ function PostPage() {
   function getFormattedDate () {
     if(post !== undefined){
       const date = post.datePosted.toString();
-      const month = date.substring(4, 7);
+      const month = date.substring(5, 7);
       const day = date.substring(8, 10);
-      const year = date.substring(11, 15);
+      const year = date.substring(0, 4);
       return month + " " + day + ", " + year;
     }
     return 'May 30, 2022';    
@@ -208,7 +220,7 @@ function PostPage() {
             <Text b h1>{post?.title}</Text>
             </Grid>
             <Grid xs={6} style={{marginRight:'1em'}}>
-                <Text small>{getUserName(postId)}</Text>
+                <Text small>{getUserName(post.authorId)}</Text>
                 <Spacer h={.5} />
                 <Text small>{getFormattedDate()}</Text>
             </Grid>
@@ -230,21 +242,6 @@ function PostPage() {
                         <Card.Content>
                             <Text small>{getUserName(msg.authorId)}</Text>
                             <Text h3>{msg.content}</Text>
-                        </Card.Content>
-                    </Card>
-                    <Spacer h={0.5} />
-                    </>
-                );
-            })
-            : null}
-
-        {post?.posts
-            ? post?.posts.map((msg) => {
-                return (
-                    <>
-                    <Card width="90%" style={{marginLeft: '4em'}}>
-                        <Card.Content>
-                            <Text small>{posts.length}</Text>
                         </Card.Content>
                     </Card>
                     <Spacer h={0.5} />
