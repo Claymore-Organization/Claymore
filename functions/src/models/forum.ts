@@ -28,12 +28,6 @@ export class ForumPost extends Serializable implements ForumPostInterface {
 }
 
 export interface ForumThreadInterface {
-    title: string
-    status: ForumStatus
-    posts: ForumPostInterface[]
-}
-
-export interface ForumThreadInterface {
     authorId: string
     datePosted: Date
     content: string
@@ -43,23 +37,23 @@ export interface ForumThreadInterface {
 }
 
 export class ForumThread extends Serializable implements ForumThreadInterface {
-    authorId = ""
-    datePosted = new Date()
-    content = ""
-    title = ""
-    status = ForumStatus.New
-    posts: ForumPostInterface[] = []
+  authorId = "";
+  datePosted = new Date();
+  content = "";
+  title = "";
+  status = ForumStatus.New;
+  posts: ForumPostInterface[] = [];
 
-    constructor(data: props) {
-        super();
-        Object.assign(this, super.getProps(data));
-    }
+  constructor(data: props) {
+    super();
+    Object.assign(this, super.getProps(data));
+  }
 
-    empty() {
-        return new ForumThread({});
-    }
+  empty() {
+    return new ForumThread({});
+  }
 
-    addPost(post: ForumPost) {
-        this.posts.push(post);
-    }
+  addPost(post: ForumPost) {
+    this.posts.push(post);
+  }
 }

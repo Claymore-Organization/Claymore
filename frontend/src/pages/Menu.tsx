@@ -28,8 +28,8 @@ function App() {
 
   async function fetchMenu() {
     try {
-      const response = Menu;
-      // await fetch("").then((res) => res.json());
+      const response = await fetch("https://us-central1-claymore-d6749.cloudfunctions.net/default/figure").then((res) => res.json());
+      console.log(response)
       setMenu(response);
     } catch (e) {
       console.error(e);
