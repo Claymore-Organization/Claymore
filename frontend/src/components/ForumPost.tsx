@@ -1,4 +1,5 @@
 import { Text, Card, Spacer, Image } from '@geist-ui/react';
+import { useEffect, useState } from 'react';
 import { Link } from "react-router-dom";
 
 // interface Post {
@@ -46,20 +47,22 @@ interface PostItemProps {
 
 const ForumPost = (props: PostItemProps) => {
   const { post } = props;
+  const [uname, setUname] = useState<string>("");
 
   async function fetchUser(){
     try {
         const response = await fetch(`http://localhost:5001/claymore-d6749/us-central1/default/user?userId=${post.authorId}`).then((res) => (res.json()));
         // console.log(response);
+        let user : User = {id: "", username: "", image:"", orders:[]}; 
         Object.keys(response).forEach(function(key) {
-            const user = {
+            user = {
               id: key,
               username: response[key]["username"],
               image: response[key]["image"],
               orders: response[key]["orders"],
             };
           });
-        return response
+        return user;
 
       } catch (e) {
         console.error(e);
@@ -71,10 +74,28 @@ const ForumPost = (props: PostItemProps) => {
     const user = await fetchUser();
     console.log(user);
     if(user === undefined){
+        console.log("user undefined");
         return "Undefined User";
     }
+    console.log("Printing username: " + user.username);
+    console.log(user["username"]);
     return user.username;
   }
+
+  useEffect(() => {
+    const setup = async () => {
+        const uname = await getUserName();
+        setUname(uname);
+  
+        // const postList = await fetchPosts();
+        // const post = await getPost(Number(params.id), (postList as Array<Post>));
+        // setPost(post);
+        // const postMessageIds = post.messages;
+        // const messagesList = await fetchMessages(postMessageIds);
+        // setMessagesList(messagesList!)
+      };
+      setup();
+  }, []);
 
   return (
     <div>
@@ -83,7 +104,7 @@ const ForumPost = (props: PostItemProps) => {
             height="200px" width="400px" draggable={false} />
             <Text h4 mb={0}><Link to={`post/${post.id}`}>{post.title}</Link></Text>
             
-            <Text type="secondary" small>{getUserName()}</Text>
+            <Text type="secondary" small>{uname}</Text>
             <Card.Footer>
                 <Text h4 mb={0}>{post.content}</Text>
             </Card.Footer>

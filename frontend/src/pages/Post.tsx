@@ -141,7 +141,7 @@ function PostPage() {
 
   function getFormattedDate () {
     if(post === undefined){
-        return 'May 30, 2022'
+        return 'May 30, 2022';
     }
 
     const date = post.datePosted.toString();

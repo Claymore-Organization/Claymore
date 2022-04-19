@@ -52,9 +52,9 @@ function Forum() {
   async function fetchPosts() {
     try {
       const response = await fetch('http://localhost:5001/claymore-d6749/us-central1/default/forum').then((res) => (res.json()));
-      // console.log(response);
+      console.log(response);
       const postObjList : Array<ForumThread> = [];
-      Object.keys(response).map(function(key) {
+      Object.keys(response).forEach(function(key) {
         postObjList.push({
           id: key,
           authorId: response[key]["authorId"],
@@ -62,8 +62,8 @@ function Forum() {
           content: response[key]["content"],
           title: response[key]["title"],
           status: response[key]["status"],
-          posts: response[key]["posts"]
-        });
+          posts: (response[key]["posts"])
+        } as ForumThread);
       });
       console.log(postObjList);
       setPostList(postObjList);
