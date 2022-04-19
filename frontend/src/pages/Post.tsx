@@ -6,6 +6,8 @@ import { useNavigate } from 'react-router-dom';
 import TempPosts from "../assets/postsData";
 import TempMessages from "../assets/messagesData";
 import Header from '../components/Header';
+import { throws } from 'assert';
+import posts from '../assets/postsData';
 
 // interface Message {
 //     id: number,
@@ -23,6 +25,13 @@ import Header from '../components/Header';
 //     messages: number[]
 // }
 
+interface User {
+  id: string,
+  username: string,
+  image: string,
+  orders: string[]
+}
+
 interface ForumPost {
   authorId: string
   datePosted: Date
@@ -30,7 +39,6 @@ interface ForumPost {
 }
 
 interface ForumThread {
-    id: string,
     authorId: string,
     datePosted: Date,
     content: string,
@@ -39,29 +47,67 @@ interface ForumThread {
     posts: ForumPost[]
 }
 
+const EmptyForumThread: ForumThread = {
+  authorId: '',
+  datePosted: new Date(),
+  content: '',
+  title: 'test',
+  status: '',
+  posts: []
+};
+
 function PostPage() {
   const params = useParams();
   // const [messagesList, setMessagesList] = useState<Array<ForumPost>>([]);
+  // const [post, setPost] = useState<ForumThread>();
   const [post, setPost] = useState<ForumThread>();
   const [newMessageContent, setNewMessageContent] = useState<string>('');
+  const [postId, setPostId] = useState<string>('');
+  // const [userList, setUserList] = useState<Array<User>>([]);
+  const [userMap, setUserMap] = useState<Map<string, User>>(new Map());
 
   async function fetchPost(id : string){
+    console.log("getting post with id: " + id);
     try {
-      let response = await fetch(`http://localhost:5001/claymore-d6749/us-central1/default/forum?forumId=${id}`).then((res) => (res.json()));
+      const response = await fetch(`http://localhost:5001/claymore-d6749/us-central1/default/forum?forumId=${id}`).then((res) => (res.json()));
       console.log(response);
-      if(response === undefined){
-        response = {id: "-1", authorId: "-1", status: 'new', datePosted: new Date(), title: '', content: '', posts: []}
-      }
-      setPost(response);
+      const p : Map<string, ForumThread> = response;
+      return p;
+      // setPost(response); // FIX THIS: MAKE post a MAP string -> ForumThread
     //   setMessagesList(TempMessages);
       // const response = TempMessages.filter(msg => postMessageIds.includes(msg.id));
       // return response;
       
     } catch (e) {
-      setPost({id: "-1", authorId: "-1", status: 'new', datePosted: new Date(), title: '', content: '', posts: []})
+      // setPost({id: "-1", authorId: "-1", status: 'new', datePosted: new Date(), title: '', content: '', posts: []})
       console.error(e);
+      const m = new Map();
+      m.set("forumtest", EmptyForumThread);
+      return m;
     }
     
+  }
+
+  async function fetchUsers() {// FIX THIS: MAKE post a MAP string -> User
+    try {
+      const response = await fetch('http://localhost:5001/claymore-d6749/us-central1/default/user').then((res) => (res.json()));
+      console.log(response);
+      setUserMap(response);
+      // console.log(response);
+      // const userObjList : Array<User> = [];
+      // Object.keys(response).forEach(function(key) {
+      //   userObjList.push({
+      //     id: key,
+      //     username: response[key]["username"],
+      //     image: response[key]["image"],
+      //     orders: response[key]["orders"]
+      //   } as User);
+      // });
+      // console.log(userObjList);
+      // setUserList(userObjList);
+    } catch (e) {
+      console.error(e);
+    }
   }
 
   // async function fetchPosts() {
@@ -107,9 +153,12 @@ function PostPage() {
 
   useEffect(() => {
     const setup = async () => {
-      const postId = "forum" + (params.id);
-      await fetchPost(postId);
-      
+      const postId = "" + (params.id);
+      setPostId(postId);
+      const p = await fetchPost(postId);
+      const postVal : ForumThread = p.get(postId);
+      setPost(postVal);
+      await fetchUsers();
 
       // const postList = await fetchPosts();
       // const post = await getPost(Number(params.id), (postList as Array<Post>));
@@ -122,33 +171,23 @@ function PostPage() {
   }, [params.id]);
 
   function getUserName(userID : string){
-    if(userID === "user1"){
-        return "Max Dunaevschi";
+    // const userObj = userList.find(u => u.id === userID);
+    const userObj = userMap.get(userID);
+    if(userObj === undefined){
+      return "Undefined User";
     }
-    else if(userID === "user2"){
-        return "Gabriel Magendzo";
-    }
-    else if(userID === "user3"){
-        return "Oscar Kav";
-    }
-    else if(userID === "user4"){
-        return "Achilles Ecos";
-    }
-    else {
-        return "Gialon Kasha";
-    }
+    return userObj.username;
   }
 
   function getFormattedDate () {
-    if(post === undefined){
-        return 'May 30, 2022';
+    if(post !== undefined){
+      const date = post.datePosted.toString();
+      const month = date.substring(4, 7);
+      const day = date.substring(8, 10);
+      const year = date.substring(11, 15);
+      return month + " " + day + ", " + year;
     }
-
-    const date = post.datePosted.toString();
-    const month = date.substring(4, 7);
-    const day = date.substring(8, 10);
-    const year = date.substring(11, 15);
-    return month + " " + day + ", " + year;
+    return 'May 30, 2022';    
   }
 
   function handleNewMsgChange(event : React.ChangeEvent<any>) {
@@ -165,10 +204,11 @@ function PostPage() {
         <Card.Content>
         <Grid.Container>
             <Grid xs={18}>
+            <Text b h1>{}</Text>
             <Text b h1>{post?.title}</Text>
             </Grid>
             <Grid xs={6} style={{marginRight:'1em'}}>
-                <Text small>{getUserName(post!.id)}</Text>
+                <Text small>{getUserName(postId)}</Text>
                 <Spacer h={.5} />
                 <Text small>{getFormattedDate()}</Text>
             </Grid>
@@ -183,13 +223,28 @@ function PostPage() {
         </Card>
         <Spacer h={0.5} />
         {post?.posts
-            ? post.posts.map((msg) => {
+            ? post?.posts.map((msg) => {
                 return (
                     <>
                     <Card width="90%" style={{marginLeft: '4em'}}>
                         <Card.Content>
                             <Text small>{getUserName(msg.authorId)}</Text>
                             <Text h3>{msg.content}</Text>
+                        </Card.Content>
+                    </Card>
+                    <Spacer h={0.5} />
+                    </>
+                );
+            })
+            : null}
+
+        {post?.posts
+            ? post?.posts.map((msg) => {
+                return (
+                    <>
+                    <Card width="90%" style={{marginLeft: '4em'}}>
+                        <Card.Content>
+                            <Text small>{posts.length}</Text>
                         </Card.Content>
                     </Card>
                     <Spacer h={0.5} />
@@ -205,7 +260,7 @@ function PostPage() {
                     <input type="text" id="newMsg" name="newMessageInput" placeholder="Enter New Message" value={newMessageContent} onChange={handleNewMsgChange} style={{width:'100%', height:'5em'}}></input>
                 </Grid>
                 <Grid xs={6}>
-                    <Button type="error" style={{padding:0, marginTop: '1em', marginLeft: '2em'}}>Submit</Button>
+                    <Button type="error" style={{paddingBottom:50, marginTop: '1em', marginLeft: '2em'}}>Submit</Button>
                 </Grid>
                 </Grid.Container>
             </Card.Content>

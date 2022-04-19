@@ -72,13 +72,10 @@ const ForumPost = (props: PostItemProps) => {
 
   async function getUserName(){
     const user = await fetchUser();
-    console.log(user);
     if(user === undefined){
         console.log("user undefined");
         return "Undefined User";
     }
-    console.log("Printing username: " + user.username);
-    console.log(user["username"]);
     return user.username;
   }
 
@@ -86,13 +83,6 @@ const ForumPost = (props: PostItemProps) => {
     const setup = async () => {
         const uname = await getUserName();
         setUname(uname);
-  
-        // const postList = await fetchPosts();
-        // const post = await getPost(Number(params.id), (postList as Array<Post>));
-        // setPost(post);
-        // const postMessageIds = post.messages;
-        // const messagesList = await fetchMessages(postMessageIds);
-        // setMessagesList(messagesList!)
       };
       setup();
   }, []);
