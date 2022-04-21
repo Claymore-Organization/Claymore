@@ -46,17 +46,14 @@ app.get("/user", (req, res) => {
 })
 
 app.post('/figure', (req, res) => {
-  console.log(req.body);
   postFigure(req, res);
 });
 
 app.post('/forum', (req, res) => {
-  console.log(req.body);
   postForum(req, res);
 });
 
-app.post('/order', (req, res) => {
-  console.log(req.body);
+app.post('/order', (req, res) => {s
   postOrder(req, res);
 });
 

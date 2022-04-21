@@ -122,16 +122,12 @@ function PostPage() {
     console.log("Submitted");
     if(newMessageContent !== ""){
         try {
-          // const numMsgs = post.posts.length + 1;
-          // const msgId = "posts" + numMsgs;
           const authorId = "signedinuser";
-          const datePosted = new Date();
           const content = newMessageContent;
           const newPost = { "authorId": authorId, 
                             "content": content
                           };
 
-          console.log(newPost);
           const requestOptions = {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
