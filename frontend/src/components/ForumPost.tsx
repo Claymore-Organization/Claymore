@@ -2,20 +2,6 @@ import { Text, Card, Spacer, Image } from '@geist-ui/react';
 import { useEffect, useState } from 'react';
 import { Link } from "react-router-dom";
 
-// interface Post {
-//     id: number,
-//     user: number,
-//     status: string,
-//     date_posted: Date,
-//     title: string,
-//     content: string,
-//     messages: number[]
-// }
-
-// interface PostItemProps {
-//     post: Post
-// }
-
 interface User {
     id: string,
     username: string,
@@ -52,7 +38,6 @@ const ForumPost = (props: PostItemProps) => {
   async function fetchUser(){
     try {
         const response = await fetch(`http://localhost:5001/claymore-d6749/us-central1/default/user?userId=${post.authorId}`).then((res) => (res.json()));
-        // console.log(response);
         let user : User = {id: "", username: "", image:"", orders:[]}; 
         Object.keys(response).forEach(function(key) {
             user = {

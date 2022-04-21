@@ -93,6 +93,7 @@ export async function getForums(req: Request, res: Response) {
 // });
 
 export async function postForum(req: Request, res: Response) {
+  console.log("hit forum post endpoint");
   const forumId = req.query.forumId?.toString();
   if (forumId) {
     // TODO: Update existing forum thread

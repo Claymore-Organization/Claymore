@@ -23,7 +23,7 @@ function NewPostForm() {
       'date_posted': new Date(),
       'title': title,
       'content': content,
-      messages: []
+      'messages': []
     };
 
     // try {

@@ -9,22 +9,6 @@ import Header from '../components/Header';
 import { throws } from 'assert';
 import posts from '../assets/postsData';
 
-// interface Message {
-//     id: number,
-//     user: number,
-//     content: string,
-// }
-
-// interface Post {
-//     id: number,
-//     user: number,
-//     status: string,
-//     date_posted: Date,
-//     title: string,
-//     content: string,
-//     messages: number[]
-// }
-
 interface User {
   username: string,
   image: string,
@@ -55,21 +39,11 @@ const EmptyForumThread: ForumThread = {
   posts: []
 };
 
-interface MenuItem {
-  id: number;
-  name: string;
-  price: number;
-  classic: boolean;
-}
-
 function PostPage() {
   const params = useParams();
-  // const [messagesList, setMessagesList] = useState<Array<ForumPost>>([]);
-  // const [post, setPost] = useState<ForumThread>();
   const [post, setPost] = useState<ForumThread>(EmptyForumThread);
   const [newMessageContent, setNewMessageContent] = useState<string>('');
   const [postId, setPostId] = useState<string>('');
-  // const [userList, setUserList] = useState<Array<User>>([]);
   const [userMap, setUserMap] = useState<Map<string, User>>(new Map<string, User>());
 
   async function fetchPost(id : string){
@@ -78,31 +52,19 @@ function PostPage() {
       const response = await fetch(`http://localhost:5001/claymore-d6749/us-central1/default/forum?forumId=${id}`).then((res) => (res.json()));
       console.log(response);
       const p = response[id] as ForumThread;
-      // const p : Map<string, ForumThread> = response as Map<string, ForumThread>;
-      // console.log(p);
       return p;
-      // setPost(response); // FIX THIS: MAKE post a MAP string -> ForumThread
-    //   setMessagesList(TempMessages);
-      // const response = TempMessages.filter(msg => postMessageIds.includes(msg.id));
-      // return response;
-      
     } catch (e) {
-      // setPost({id: "-1", authorId: "-1", status: 'new', datePosted: new Date(), title: '', content: '', posts: []})
       console.error(e);
-      // const m = new Map();
-      // m.set("forumtest", EmptyForumThread);
       return EmptyForumThread;
     }
     
   }
 
-  async function fetchUsers() {// FIX THIS: MAKE post a MAP string -> User
+  async function fetchUsers() {
     try {
       const response = await fetch('http://localhost:5001/claymore-d6749/us-central1/default/user').then((res) => (res.json()));
       console.log(response);
-      // setUserMap(response);
 
-      // console.log(response);
       const userObjMap : Map<string, User> = new Map<string, User>();
       Object.keys(response).forEach(function(key) {
         userObjMap.set(key, {
@@ -111,54 +73,12 @@ function PostPage() {
           orders: response[key]["orders"]
         } as User);
       });
-      // console.log(userObjList);
-      // setUserList(userObjList);
+
       setUserMap(userObjMap);
     } catch (e) {
       console.error(e);
     }
   }
-
-  // async function fetchPosts() {
-  //   try {
-  //     //const response = await fetch('/posts').then((res) => (res.json()));
-  //     // console.log(response);
-  //     //setPostList(response);
-      
-
-  //   //   setMessagesList(TempMessages);
-  //     const response = TempPosts;
-  //     return response;
-      
-  //   } catch (e) {
-  //     console.error(e);
-  //   }
-  // }
-
-  // async function fetchMessages(postMessageIds : number[]) {
-  //   try {
-  //     //const response = await fetch('/posts').then((res) => (res.json()));
-  //     // console.log(response);
-  //     //setPostList(response);
-
-  //   //   setMessagesList(TempMessages);
-  //     const response = TempMessages.filter(msg => postMessageIds.includes(msg.id));
-  //     return response;
-      
-  //   } catch (e) {
-  //     console.error(e);
-  //   }
-  // }
-
-  // async function getPost(id: number, postList: Array<ForumThread>){
-  //   // post passed in via link
-  //   const post = postList.find(p => p.id === id);
-  //   if(post !== undefined) {
-  //     //console.log("post: ", post);
-  //     return post;
-  //   } 
-  //   return {id: -1, user: -1, status: 'new', date_posted: new Date(), title: '', content: '', messages: []}
-  // }
 
   useEffect(() => {
     const setup = async () => {
@@ -167,23 +87,15 @@ function PostPage() {
       const p = await fetchPost(postId);
       setPost(p);
       await fetchUsers();
-
-      // const postList = await fetchPosts();
-      // const post = await getPost(Number(params.id), (postList as Array<Post>));
-      // setPost(post);
-      // const postMessageIds = post.messages;
-      // const messagesList = await fetchMessages(postMessageIds);
-      // setMessagesList(messagesList!)
     };
     setup();
   }, [params.id]);
 
   function getUserName(userID : string){
-    // const userObj = userList.find(u => u.id === userID);
     if(userMap === undefined){
       return "Undefined User bc map";
     }
-    console.log(userID);
+
     const userObj = userMap.get(userID);
     if(userObj === undefined){
       return "Undefined User bc field";
@@ -204,6 +116,35 @@ function PostPage() {
 
   function handleNewMsgChange(event : React.ChangeEvent<any>) {
     setNewMessageContent(event.target.value);
+  }
+
+  async function handleSubmit(){
+    console.log("Submitted");
+    if(newMessageContent !== ""){
+        try {
+          // const numMsgs = post.posts.length + 1;
+          // const msgId = "posts" + numMsgs;
+          const authorId = "signedinuser";
+          const datePosted = new Date();
+          const content = newMessageContent;
+          const newPost = { "authorId": authorId, 
+                            "content": content
+                          };
+
+          console.log(newPost);
+          const requestOptions = {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(newPost)
+          };
+
+          await fetch(`http://localhost:5001/claymore-d6749/us-central1/default/forum?forumId=${postId}`, requestOptions).then((res) => (res.json()));
+
+        } catch (e) {
+          console.error(e);
+        }
+        setNewMessageContent("");
+      }
   }
 
   return (
@@ -252,14 +193,16 @@ function PostPage() {
 
         <Card width="90%" style={{marginLeft: '4em'}}>
             <Card.Content>
-                <Grid.Container gap={2} justify="center">
-                <Grid xs={18}>
-                    <input type="text" id="newMsg" name="newMessageInput" placeholder="Enter New Message" value={newMessageContent} onChange={handleNewMsgChange} style={{width:'100%', height:'5em'}}></input>
-                </Grid>
-                <Grid xs={6}>
-                    <Button type="error" style={{paddingBottom:50, marginTop: '1em', marginLeft: '2em'}}>Submit</Button>
-                </Grid>
-                </Grid.Container>
+                <form onSubmit={handleSubmit}>
+                    <Grid.Container gap={2} justify="center">
+                    <Grid xs={18}>
+                        <input type="text" id="newMsg" name="newMessageInput" placeholder="Enter New Message" value={newMessageContent} onChange={handleNewMsgChange} style={{width:'100%', height:'5em'}}></input>
+                    </Grid>
+                    <Grid xs={6}>
+                        <Button type="error" style={{paddingBottom:50, marginTop: '1em', marginLeft: '2em'}} onClick={handleSubmit}>Submit</Button>
+                    </Grid>
+                    </Grid.Container>
+                </form>
             </Card.Content>
         </Card>
       </div>

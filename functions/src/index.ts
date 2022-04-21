@@ -45,17 +45,17 @@ app.get("/user", (req, res) => {
   getUsers(req, res);
 })
 
-app.post('/addfigure', (req, res) => {
+app.post('/figure', (req, res) => {
   console.log(req.body);
   postFigure(req, res);
 });
 
-app.post('/addforum', (req, res) => {
+app.post('/forum', (req, res) => {
   console.log(req.body);
   postForum(req, res);
 });
 
-app.post('/addorder', (req, res) => {
+app.post('/order', (req, res) => {
   console.log(req.body);
   postOrder(req, res);
 });

@@ -7,22 +7,6 @@ import Header from '../components/Header';
 import { Collapse } from '@geist-ui/core';
 import { useNavigate } from 'react-router-dom';
 
-// interface Message {
-//     id: number,
-//     user: number,
-//     content: string,
-// }
-
-// interface Post {
-//     id: number,
-//     user: number,
-//     status: string,
-//     date_posted: Date,
-//     title: string,
-//     content: string,
-//     messages: number[]
-// }
-
 interface Post {
   authorId: string
   datePosted: Date
@@ -41,7 +25,6 @@ interface ForumThread {
 
 function Forum() {
   const [postList, setPostList] = useState<Array<ForumThread>>([]);
-  const [messagesList, setMessagesList] = useState<Array<ForumPost>>([]);
 
   const navigate = useNavigate();
 
