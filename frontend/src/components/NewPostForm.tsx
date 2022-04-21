@@ -6,6 +6,7 @@ import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Grid';
 import TextField from '@mui/material/TextField';
 import {Button} from "@mui/material";
+import { path } from '../config';
 
 
 function NewPostForm() {
@@ -33,7 +34,7 @@ function NewPostForm() {
           body: JSON.stringify(newForumThread)
       };
 
-      await fetch('http://localhost:5001/claymore-d6749/us-central1/default/forum', requestOptions).then((res) => (res.json()));
+      await fetch(`${path}/forum`, requestOptions).then((res) => (res.json()));
 
     } catch (e) {
       console.error(e);
@@ -41,22 +42,6 @@ function NewPostForm() {
 
     setContent("");
     setTitle("");
-    // const data = {
-    //   'id': id,
-    //   'user': userID,
-    //   'status': 'New',
-    //   'date_posted': new Date(),
-    //   'title': title,
-    //   'content': content,
-    //   'messages': []
-    // };
-
-    
-    // try {
-    //   const sendData = axios.post('', data);
-    // } catch (e) {
-    //   console.error(e);
-    // }
   }
 
   return (

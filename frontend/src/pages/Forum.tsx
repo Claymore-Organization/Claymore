@@ -6,6 +6,7 @@ import TempMessages from "../assets/messagesData";
 import Header from '../components/Header';
 import { Collapse } from '@geist-ui/core';
 import { useNavigate } from 'react-router-dom';
+import { path } from '../config';
 
 interface Post {
   authorId: string
@@ -34,7 +35,7 @@ function Forum() {
 
   async function fetchPosts() {
     try {
-      const response = await fetch('http://localhost:5001/claymore-d6749/us-central1/default/forum').then((res) => (res.json()));
+      const response = await fetch(`${path}/forum`).then((res) => (res.json()));
       console.log(response);
       const postObjList : Array<ForumThread> = [];
       Object.keys(response).forEach(function(key) {

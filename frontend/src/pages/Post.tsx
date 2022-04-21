@@ -8,6 +8,7 @@ import TempMessages from "../assets/messagesData";
 import Header from '../components/Header';
 import { throws } from 'assert';
 import posts from '../assets/postsData';
+import { path } from '../config';
 
 interface User {
   username: string,
@@ -49,7 +50,7 @@ function PostPage() {
   async function fetchPost(id : string){
     console.log("getting post with id: " + id);
     try {
-      const response = await fetch(`http://localhost:5001/claymore-d6749/us-central1/default/forum?forumId=${id}`).then((res) => (res.json()));
+      const response = await fetch(`${path}/forum?forumId=${id}`).then((res) => (res.json()));
       console.log(response);
       const p = response[id] as ForumThread;
       return p;
@@ -62,7 +63,7 @@ function PostPage() {
 
   async function fetchUsers() {
     try {
-      const response = await fetch('http://localhost:5001/claymore-d6749/us-central1/default/user').then((res) => (res.json()));
+      const response = await fetch(`${path}/user`).then((res) => (res.json()));
       console.log(response);
 
       const userObjMap : Map<string, User> = new Map<string, User>();
@@ -134,7 +135,7 @@ function PostPage() {
               body: JSON.stringify(newPost)
           };
 
-          await fetch(`http://localhost:5001/claymore-d6749/us-central1/default/forum?forumId=${postId}`, requestOptions).then((res) => (res.json()));
+          await fetch(`${path}/forum?forumId=${postId}`, requestOptions).then((res) => (res.json()));
 
         } catch (e) {
           console.error(e);
