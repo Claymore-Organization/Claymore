@@ -2,32 +2,15 @@ import React, {useState} from "react";
 import "./Payload.css";
 import { Card, CardContent, Typography, Button } from "@mui/material";
 
-interface OrderStatus {
-  orderId: number;
-  drontId: number;
-  status: string;
-}
-
 interface PayloadProps {
-  id: number;
-  droneId: number;
+  id: string;
   items: { name: string; quantity: number }[];
+  address: string;
   status: string;
-  statuses: Array<OrderStatus>;
-  setStatuses: any;
 }
 
 function Payload(props: PayloadProps) {
-  const { id, droneId, items, status, statuses, setStatuses } = props;
-
-  const item = statuses.filter((item) => item.orderId == id)[0];
-  let inDatabase = true;
-  if (!item) {
-    inDatabase = false;
-  }
-
-  const [curStatus, setCurStatus] = useState("Pending");
-
+  const { id, items, status, address } = props;
 
   return (
     <div className="Payload">
@@ -35,7 +18,7 @@ function Payload(props: PayloadProps) {
         <CardContent className="cardContent">
           <div className="info">
             <Typography variant="h6">
-              Order #{id} - {inDatabase ? status : curStatus}
+              {id} - {status}
             </Typography>
             {items.map((item, index) => {
               return (
@@ -46,30 +29,10 @@ function Payload(props: PayloadProps) {
                 </div>
               );
             })}
-            {(inDatabase ? status : curStatus) == "Pending" && (
-              <div>
-                <Button
-                  variant="contained"
-                  className="sendButton"
-                  onClick={() => {
-                    if (inDatabase) {
-                      const filtered = statuses.filter((item) => item.orderId != id);
-                      const item = statuses.filter((item) => item.orderId == id)[0];
-                      item.status = "Sent";
-                        setStatuses([...filtered, item]);
-                    } else {
-                      setCurStatus("Sent");
-                    }
-                  }}
-                >
-                  Send Drone
-                </Button>
-              </div>
-            )}
           </div>
           <div className="assignedDrone">
-            <Typography variant="body1">Load To</Typography>
-            <Typography variant="h3">D{droneId}</Typography>
+            <Typography variant="body1">Ship To</Typography>
+            <Typography variant="body1">{address}</Typography>
           </div>
         </CardContent>
       </Card>

@@ -6,10 +6,10 @@ import { useEffect, useState } from "react";
 import figureMenu from "../assets/figureMenu"
 
 interface Order {
-  id: number;
   customerId: number;
-  items: { itemId: number; quantity: number }[];
+  items: { itemId: string; quantity: number }[];
   address: string;
+  status: string;
 }
 
 interface MenuItem {
@@ -19,18 +19,9 @@ interface MenuItem {
   classic: boolean;
 }
 
-interface OrderStatus {
-  orderId: number;
-  drontId: number;
-  status: string;
-}
-
 function App() {
-  const [orders, setOrders] = useState<Array<Order>>([]);
-
-  const [menu, setMenu] = useState<Array<MenuItem>>([]);
-
-  const [statuses, setStatuses] = useState<Array<OrderStatus>>([]);
+  const [orders, setOrders] = useState<Record<string, Order>>({});
+  const [menu, setMenu] = useState<any>();
 
   const testOrders = [
     {
@@ -53,28 +44,9 @@ function App() {
     },
   ]
 
-  const testStatus = [
-    {
-      orderId: 1, 
-      drontId: 1, 
-      status: "Pending",
-    },
-    {
-      orderId: 2, 
-      drontId: 2, 
-      status: "Pending",
-    },
-    {
-      orderId: 3, 
-      drontId: 3, 
-      status: "Pending",
-    },
-  ]
-
   async function fetchMenu() {
     try {
-      const response = figureMenu;
-      // await fetch("").then((res) => res.json());
+      const response = await fetch("https://us-central1-claymore-d6749.cloudfunctions.net/default/figure").then((res) => res.json());
       setMenu(response);
     } catch (e) {
       console.error(e);
@@ -83,19 +55,9 @@ function App() {
 
   async function fetchOrders() {
     try {
-      const response = testOrders;
-      // await fetch('').then((res) => (res.json()));
+      const response = await fetch('https://us-central1-claymore-d6749.cloudfunctions.net/default/order').then((res) => (res.json()));
+      console.log(response)
       setOrders(response);
-    } catch (e) {
-      console.error(e);
-    }
-  }
-
-  async function fetchStatuses() {
-    try {
-      const response = testStatus;
-      // await fetch("").then((res) => res.json());
-      setStatuses(response);
     } catch (e) {
       console.error(e);
     }
@@ -104,11 +66,10 @@ function App() {
   useEffect(() => {
     fetchMenu();
     fetchOrders();
-    fetchStatuses();
   }, []);
 
-  function getName(itemId: number) {
-    const item = menu.filter((item) => item.id == itemId)[0];
+  function getName(itemId: string) {
+    const item = menu[itemId];
     if (item) {
       return item.name;
     } else {
@@ -116,7 +77,7 @@ function App() {
     }
   }
 
-  function getItems(ids: { itemId: number; quantity: number }[]) {
+  function getItems(ids: { itemId: string; quantity: number }[]) {
     return ids.map((object) => {
       return {
         name: getName(object.itemId),
@@ -124,17 +85,6 @@ function App() {
       };
     });
   }
-
-  function getStatus(orderId: number) {
-    const status = statuses.filter((item) => item.orderId == orderId)[0];
-    if (status) {
-      return status.status;
-    } else {
-      return "Pending"
-    }
-  }
-
-  const droneCount = 6;
 
   return (
     <div className="App">
@@ -144,17 +94,15 @@ function App() {
           <Typography variant="h4" className="payloadHeader">
             Payloads
           </Typography>
-          {orders.map((object, index) => {
-            const status = getStatus(object.id);
+          {Object.keys(orders).map((key: string) => {
+            const order = orders[key];
+            const status = order.status;
             return (
               <Payload
-                key={index}
-                id={object.id}
+                id={key}
                 status={status}
-                droneId={(index % droneCount) + 1}
-                items={getItems(object.items)}
-                statuses={statuses}
-                setStatuses={setStatuses}
+                items={getItems(order.items)}
+                address={order.address}
               />
             );
           })}
