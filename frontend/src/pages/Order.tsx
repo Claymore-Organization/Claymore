@@ -36,7 +36,7 @@ interface MenuItem {
 
 function App() {
   const location = useLocation();
-  const { cart, address } = location.state;
+  const { cart } = location.state;
 
   const orderSummary = cart;
 
@@ -46,6 +46,13 @@ function App() {
   });
 
   const [menu, setMenu] = useState<Array<MenuItem>>([]);
+  const [firstname, setFirstname] = useState<string>("Michael")
+  const [lastname, setLastname] = useState<string>("Hilton")
+  const [address, setAddress] = useState<string>("5000 Forbes Ave")
+  const [city, setCity] = useState<string>("Pittsburgh")
+  const [state, setState] = useState<string>("PA")
+  const [zip, setZip] = useState<number>(15213)
+  const [country, setCountry] = useState<string>("USA")
 
   async function fetchMenu() {
     try {
@@ -81,7 +88,6 @@ function App() {
     return total;
   }
 
-  const addresses = ["5000 Forbes Ave", "Pittsburgh", "PA", "15213", "USA"];
   const payments = [
     { name: "Card type", detail: "Visa" },
     { name: "Card holder", detail: "Michael Hilton" },
@@ -112,9 +118,24 @@ function App() {
   function getStepContent(step: number) {
     switch (step) {
       case 0:
-        return <AddressForm />;
+        return <AddressForm
+                firstname={firstname}
+                setFirstname={setFirstname}
+                lastname={lastname}
+                setLastname={setLastname}
+                address={address}
+                setAddress={setAddress}
+                city={city}
+                setCity={setCity}
+                zip={zip}
+                setZip={setZip}
+                state={state}
+                setState={setState}
+                country={country}
+                setCountry={setCountry}
+              />;
       case 1:
-        return <TimeEstimate />;
+        return <TimeEstimate address={fullAddress} />;
       case 2:
         return <PaymentForm />;
       case 3:
@@ -153,8 +174,8 @@ function App() {
                 <Typography variant="h6" gutterBottom sx={{ mt: 2 }}>
                   Delivery
                 </Typography>
-                <Typography gutterBottom>Michael Hilton</Typography>
-                <Typography gutterBottom>{addresses.join(", ")}</Typography>
+                <Typography gutterBottom>{firstname + " " + lastname}</Typography>
+                <Typography gutterBottom>{fullAddress}</Typography>
               </Grid>
               <Grid item container direction="column" xs={12} sm={6}>
                 <Typography variant="h6" gutterBottom sx={{ mt: 2 }}>
@@ -199,7 +220,7 @@ function App() {
     const data = {
       customerId: Math.round(100 * Math.random()),
       items: cart,
-      address: "5000 Forbes Ave",
+      address: fullAddress,
     };
 
     console.log(JSON.stringify(data));
@@ -215,6 +236,8 @@ function App() {
     //   console.error(e);
     // }
   };
+
+  const fullAddress = [address, city, state, zip, country].join(", ")
 
   return (
     <ThemeProvider theme={theme}>
@@ -244,9 +267,8 @@ function App() {
                       Thank you for your order.
                     </Typography>
                     <Typography variant="subtitle1">
-                      Your order number is #53. We have emailed your order
-                      confirmation, and your order should arrive to 5000 Forbes
-                      Ave, Pittsburgh, PA 15213, USA in 15-20 minutes.
+                      {`Your order number is #54. We have emailed your order
+                      confirmation, and your order should arrive to ${fullAddress} in 15-20 minutes.`}
                     </Typography>
                   </React.Fragment>
                 ) : (
