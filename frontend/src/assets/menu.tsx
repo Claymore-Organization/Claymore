@@ -25,9 +25,6 @@ const menu = {
   "Melina Figure (Elden Ring)": {
     pic: melina,
   },
-  "Melina Pop Figure (Elden Ring)": {
-    pic: melina_pop,
-  },
   "Default": {
     pic: default_img,
   }

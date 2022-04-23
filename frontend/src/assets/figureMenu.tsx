@@ -6,6 +6,24 @@ const menu = [
     classic: true,
   },
   {
+    id: 1,
+    name: "Melina Figure (Elden Ring)",
+    price: 69.99,
+    classic: true,
+  },
+  {
+    id: 1,
+    name: "Melina Figure (Elden Ring)",
+    price: 69.99,
+    classic: true,
+  },
+  {
+    id: 1,
+    name: "Melina Figure (Elden Ring)",
+    price: 69.99,
+    classic: true,
+  },
+  {
     id: 2,
     name: "Melina Pop Figure (Elden Ring)",
     price: 39.99,
