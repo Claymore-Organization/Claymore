@@ -1,42 +1,77 @@
 import { Text, Card, Spacer, Image } from '@geist-ui/react';
+import { useEffect, useState } from 'react';
 import { Link } from "react-router-dom";
+import { path } from '../config';
 
-interface Post {
-    id: number,
-    user: number,
-    status: string,
-    date_posted: Date,
-    title: string,
+interface User {
+    id: string,
+    username: string,
+    image: string,
+    orders: string[]
+}
+
+interface ForumPost {
+    authorId: string
+    datePosted: Date
+    content: string
+  }
+  
+
+interface ForumThread {
+    id: string,
+    authorId: string,
+    datePosted: Date,
     content: string,
-    messages: number[]
+    title: string,
+    status: string,
+    posts: ForumPost[]
 }
 
 interface PostItemProps {
-    post: Post
+    post: ForumThread
 }
-
 
 
 const ForumPost = (props: PostItemProps) => {
   const { post } = props;
+  const [uname, setUname] = useState<string>("");
 
-  function getUserName(){
-    if(post.user === 1){
-        return "Max Dunaevschi"
-    }
-    else if(post.user === 2){
-        return "Gabriel Magendzo"
-    }
-    else if(post.user === 3){
-        return "Oscar Kav"
-    }
-    else if(post.user === 4){
-        return "Achilles Ecos"
-    }
-    else {
-        return "Gialon Kasha"
-    }
+  async function fetchUser(){
+    try {
+        const response = await fetch(`${path}/user?userId=${post.authorId}`).then((res) => (res.json()));
+        let user : User = {id: "", username: "", image:"", orders:[]}; 
+        Object.keys(response).forEach(function(key) {
+            user = {
+              id: key,
+              username: response[key]["username"],
+              image: response[key]["image"],
+              orders: response[key]["orders"],
+            };
+          });
+        return user;
+
+      } catch (e) {
+        console.error(e);
+        return undefined;
+      }
   }
+
+  async function getUserName(){
+    const user = await fetchUser();
+    if(user === undefined){
+        console.log("user undefined");
+        return "Undefined User";
+    }
+    return user.username;
+  }
+
+  useEffect(() => {
+    const setup = async () => {
+        const uname = await getUserName();
+        setUname(uname);
+      };
+      setup();
+  }, []);
 
   return (
     <div>
@@ -45,7 +80,7 @@ const ForumPost = (props: PostItemProps) => {
             height="200px" width="400px" draggable={false} />
             <Text h4 mb={0}><Link to={`post/${post.id}`}>{post.title}</Link></Text>
             
-            <Text type="secondary" small>{getUserName()}</Text>
+            <Text type="secondary" small>{uname}</Text>
             <Card.Footer>
                 <Text h4 mb={0}>{post.content}</Text>
             </Card.Footer>

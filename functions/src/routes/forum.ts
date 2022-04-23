@@ -1,7 +1,7 @@
-import {Request, Response, Router} from "express";
+import {Request, Response} from "express";
 import {ForumPost, ForumStatus, ForumThread} from "../models/forum";
 
-const forumRouter = Router();
+// const forumRouter = Router();
 
 export const TEMP_FORUM_DB: { [key:string]: ForumThread } = {
   'forum1': new ForumThread({
@@ -40,7 +40,8 @@ export const TEMP_FORUM_DB: { [key:string]: ForumThread } = {
   }),
 }
 
-forumRouter.get("/", [], async function(req: Request, res: Response) {
+export async function getForums(req: Request, res: Response) {
+  console.log("hit forum endpoint");
   const forumId = req.query.forumId?.toString();
   try {
     if (forumId) {
@@ -63,9 +64,36 @@ forumRouter.get("/", [], async function(req: Request, res: Response) {
     console.log(err);
     res.status(500).send(err);
   }
-});
+}
 
-forumRouter.post("/", [], async function(req: Request, res: Response) {
+// forumRouter.get("/", [], async function(req: Request, res: Response) {
+//   console.log("hit forum endpoint");
+//   const forumId = req.query.forumId?.toString();
+//   try {
+//     if (forumId) {
+//       // TODO: add query to find forum by id
+//       const forum = TEMP_FORUM_DB[forumId];
+//       if (forum) {
+//         const data = {
+//           [forumId]: forum,
+//         };
+//         res.send(data);
+//       } else {
+//         res.status(404).send("Forum not found");
+//       }
+//     } else {
+//       // TODO: add query for all forums
+//       const forums = TEMP_FORUM_DB;
+//       res.send(forums);
+//     }
+//   } catch (err) {
+//     console.log(err);
+//     res.status(500).send(err);
+//   }
+// });
+
+export async function postForum(req: Request, res: Response) {
+  console.log("hit forum post endpoint");
   const forumId = req.query.forumId?.toString();
   if (forumId) {
     // TODO: Update existing forum thread
@@ -88,6 +116,31 @@ forumRouter.post("/", [], async function(req: Request, res: Response) {
     };
     res.send(data);
   }
-});
+}
 
-export default forumRouter;
+// forumRouter.post("/", [], async function(req: Request, res: Response) {
+//   const forumId = req.query.forumId?.toString();
+//   if (forumId) {
+//     // TODO: Update existing forum thread
+//     // Add forum post
+//     const forum = TEMP_FORUM_DB[forumId];
+//     if (forum) {
+//       const post = new ForumPost(req.body);
+//       forum.addPost(post);
+//       res.send(forum);
+//     } else {
+//       res.status(404).send("Forum not found");
+//     }
+//   } else {
+//     // TODO: insert new forum
+//     // New forum
+//     const newForum = new ForumThread(req.body);
+//     const forumId = "forum3";
+//     const data = {
+//       [forumId]: newForum,
+//     };
+//     res.send(data);
+//   }
+// });
+
+// export default forumRouter;

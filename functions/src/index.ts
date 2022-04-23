@@ -2,19 +2,22 @@ import express from "express";
 import * as functions from "firebase-functions";
 import {getDatabase, ref, set} from "firebase/database";
 import firebase from "../firebase";
+import cors from 'cors';
+import { getForums, postForum } from "./routes/forum";
+import { getFigures, postFigure } from "./routes/figure";
+import { getOrders, postOrder } from "./routes/order";
+import { getUsers } from "./routes/user";
+
+
 // Start writing Firebase Functions
 // https://firebase.google.com/docs/functions/typescript
-import router from "./routes";
 const app = express();
-app.use(router);
-const firebasePort = 3000;
+app.use(cors({origin: true}));
 
-app.listen(firebasePort, () => {
-  console.log("server is listening at http://localhost:" + firebasePort);
-});
 app.get("/", (req, res) => {
   res.send("hello worldy");
 });
+
 // Just an example of how to use the database
 // http://localhost:5000/claymore-d6749/us-central1/default/dog
 app.get("/dog", (req, res) => {
@@ -25,4 +28,34 @@ app.get("/dog", (req, res) => {
     username: "alex4",
   });
 });
-export default functions.https.onRequest(app);
+
+app.get("/figure", (req, res) => {
+  getFigures(req, res);
+})
+
+app.get("/forum", (req, res) => {
+  getForums(req, res);
+})
+
+app.get("/order", (req, res) => {
+  getOrders(req, res);
+})
+
+app.get("/user", (req, res) => {
+  getUsers(req, res);
+})
+
+app.post('/figure', (req, res) => {
+  postFigure(req, res);
+});
+
+app.post('/forum', (req, res) => {
+  postForum(req, res);
+});
+
+app.post('/order', (req, res) => {s
+  postOrder(req, res);
+});
+
+
+export default functions.https.onRequest(app) ;
