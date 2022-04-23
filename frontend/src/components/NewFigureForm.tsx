@@ -11,16 +11,19 @@ import {Button} from "@mui/material";
 import axios from 'axios';
 
 export default function NewFigureForm() {
-  const [id, setId] = React.useState('');
   const [name, setName] = React.useState('');
+  const [img, setImg] = React.useState('');
   const [price, setPrice] = React.useState(-1.0);
   const [stock, setStock] = React.useState(-1);
   const [present, setPresent] = React.useState(true);
+  const [postSuccess, setPostSuccess] = React.useState(false);
+  const [postFail, setPostFail] = React.useState(false); 
 
   const handleSubmit = () => {
 
-    const data = {'id': id,
+    const data = {
       'name': name,
+      'image': img,
       'price': price,
       'current_stock': stock,
       'present': present
@@ -28,11 +31,15 @@ export default function NewFigureForm() {
 
     console.log(data)
 
-    // try {
-    //   const sendData = axios.post('', data);
-    // } catch (e) {
-    //   console.error(e);
-    // }
+    try {
+      const sendData = axios.post('https://us-central1-claymore-d6749.cloudfunctions.net/default/figure', data);
+    } catch (e) {
+      console.error(e);
+      setPostFail(true);
+      return;
+    }
+
+    setPostSuccess(true);
   };
 
   return (
@@ -41,18 +48,6 @@ export default function NewFigureForm() {
         Add New Shop Item
       </Typography>
       <Grid container spacing={3}>
-        <Grid item xs={12} md={6}>
-          <TextField
-            required
-            id="itemId"
-            label="Item ID (String)"
-            fullWidth
-            variant="standard"
-            onChange={(event) => {
-              setId(event.target.value);
-            }}
-          />
-        </Grid>
         <Grid item xs={12} md={6}>
           <TextField
             required
@@ -68,8 +63,20 @@ export default function NewFigureForm() {
         <Grid item xs={12} md={6}>
           <TextField
             required
+            id="imageURL"
+            label="Image URL"
+            fullWidth
+            variant="standard"
+            onChange={(event) => {
+              setImg(event.target.value);
+            }}
+          />
+        </Grid>
+        <Grid item xs={12} md={6}>
+          <TextField
+            required
             id="price"
-            label="Item Price (Float)"
+            label="Item Price"
             fullWidth
             variant="standard"
             type="number"
@@ -101,8 +108,16 @@ export default function NewFigureForm() {
           />
         </Grid>
         <Grid item xs={12}>
-          <Button disabled={!(id != '' && name != '' && price > 0.0 && stock > 0)} variant="contained" onClick={handleSubmit}>Add Item</Button>
+          <Button disabled={!(name != '' && price > 0.0 && stock > 0)} variant="contained" onClick={handleSubmit}>Add Item</Button>
         </Grid>
+        {
+          postFail && 
+          <Typography color='red'>Failed to add item, check console</Typography>
+        }
+        {
+          postSuccess && 
+          <Typography color='green'>Item added! Check menu for update</Typography>
+        }
         
       </Grid>
     </React.Fragment>
