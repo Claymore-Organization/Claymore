@@ -25,7 +25,7 @@ export default function NewFigureForm() {
       'name': name,
       'image': img,
       'price': price,
-      'current_stock': stock,
+      'stock': stock,
       'present': present
     };
 
