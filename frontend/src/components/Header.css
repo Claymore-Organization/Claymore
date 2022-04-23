@@ -5,6 +5,7 @@
   width: 100vw;
   background-color: white;
   padding: 0px;
+  z-index: 100;
 }
 
 .Header-list {
@@ -38,6 +39,7 @@
   position: fixed;
   left: 5%;
   height: 60px;
+  z-index: 101;
 }
 
 .address {
