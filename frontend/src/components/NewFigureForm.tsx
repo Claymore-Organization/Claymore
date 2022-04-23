@@ -11,18 +11,22 @@ import {Button} from "@mui/material";
 import axios from 'axios';
 
 export default function NewFigureForm() {
-  const [id, setId] = React.useState(-1);
+  const [id, setId] = React.useState('');
   const [name, setName] = React.useState('');
   const [price, setPrice] = React.useState(-1.0);
   const [stock, setStock] = React.useState(-1);
+  const [present, setPresent] = React.useState(true);
 
   const handleSubmit = () => {
 
     const data = {'id': id,
       'name': name,
       'price': price,
-      'current_stock': stock
+      'current_stock': stock,
+      'present': present
     };
+
+    console.log(data)
 
     // try {
     //   const sendData = axios.post('', data);
@@ -34,19 +38,18 @@ export default function NewFigureForm() {
   return (
     <React.Fragment>
       <Typography variant="h6" gutterBottom>
-        Post New Shop Item (Post Button only shows up if valid info is filled)
+        Add New Shop Item
       </Typography>
       <Grid container spacing={3}>
         <Grid item xs={12} md={6}>
           <TextField
             required
             id="itemId"
-            label="Item ID (Integer)"
+            label="Item ID (String)"
             fullWidth
             variant="standard"
-            type="number"
             onChange={(event) => {
-              setId(parseInt(event.target.value));
+              setId(event.target.value);
             }}
           />
         </Grid>
@@ -88,13 +91,18 @@ export default function NewFigureForm() {
             }}
           />
         </Grid>
-        {
-          id > 0 && name != '' && price > 0.0 && stock > 0 && (
-            <Grid item xs={12}>
-              <Button variant="contained" onClick={handleSubmit}>Post Item</Button>
-            </Grid>
-          )
-        }
+        <Grid item xs={12} md={6}>
+          Is this a pre-order item?
+          <Checkbox
+            id = "present"
+            onChange={(event) => {
+              setPresent(!(event.target.checked));
+            }}
+          />
+        </Grid>
+        <Grid item xs={12}>
+          <Button disabled={!(id != '' && name != '' && price > 0.0 && stock > 0)} variant="contained" onClick={handleSubmit}>Add Item</Button>
+        </Grid>
         
       </Grid>
     </React.Fragment>
