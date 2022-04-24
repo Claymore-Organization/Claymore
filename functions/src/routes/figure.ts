@@ -14,7 +14,7 @@ const TEMP_DB: { [key:string]: Figure } = {
   }),
 };
 
-export async function getFigures(req: Request, res: Response) {
+export async function getFigures(req: Request, res: Response){
   const figureId = req.query.figureId?.toString();
   try {
     if (figureId) {
@@ -64,7 +64,7 @@ export async function getFigures(req: Request, res: Response) {
 //   }
 // });
 
-export async function postFigure(req: Request, res: Response) {
+export async function postFigure(req: Request, res: Response){
   // TODO: insert new figure
   const newFigure = new Figure(req.body);
   const figureId = "figure3";

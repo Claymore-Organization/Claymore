@@ -6,22 +6,7 @@ import TempMessages from "../assets/messagesData";
 import Header from '../components/Header';
 import { Collapse } from '@geist-ui/core';
 import { useNavigate } from 'react-router-dom';
-
-// interface Message {
-//     id: number,
-//     user: number,
-//     content: string,
-// }
-
-// interface Post {
-//     id: number,
-//     user: number,
-//     status: string,
-//     date_posted: Date,
-//     title: string,
-//     content: string,
-//     messages: number[]
-// }
+import { path } from '../config';
 
 interface Post {
   authorId: string
@@ -41,7 +26,6 @@ interface ForumThread {
 
 function Forum() {
   const [postList, setPostList] = useState<Array<ForumThread>>([]);
-  const [messagesList, setMessagesList] = useState<Array<ForumPost>>([]);
 
   const navigate = useNavigate();
 
@@ -51,10 +35,10 @@ function Forum() {
 
   async function fetchPosts() {
     try {
-      const response = await fetch('http://localhost:5001/claymore-d6749/us-central1/default/forum').then((res) => (res.json()));
-      // console.log(response);
+      const response = await fetch(`${path}/forum`).then((res) => (res.json()));
+      console.log(response);
       const postObjList : Array<ForumThread> = [];
-      Object.keys(response).map(function(key) {
+      Object.keys(response).forEach(function(key) {
         postObjList.push({
           id: key,
           authorId: response[key]["authorId"],
@@ -62,8 +46,8 @@ function Forum() {
           content: response[key]["content"],
           title: response[key]["title"],
           status: response[key]["status"],
-          posts: response[key]["posts"]
-        });
+          posts: (response[key]["posts"])
+        } as ForumThread);
       });
       console.log(postObjList);
       setPostList(postObjList);
