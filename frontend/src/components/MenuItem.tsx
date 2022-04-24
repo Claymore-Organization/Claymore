@@ -11,12 +11,12 @@ import AddCircleIcon from "@mui/icons-material/AddCircle";
 import RemoveCircleIcon from "@mui/icons-material/RemoveCircle";
 
 interface CartItem {
-  itemId: number;
+  itemId: string;
   quantity: number;
 }
 
 interface MenuItemProps {
-  itemId: number;
+  itemId: string;
   name: string;
   price: number;
   setCart: React.Dispatch<React.SetStateAction<any>>;

@@ -4,41 +4,41 @@ import {ForumPost, ForumStatus, ForumThread} from "../models/forum";
 // const forumRouter = Router();
 
 export const TEMP_FORUM_DB: { [key:string]: ForumThread } = {
-  'forum1': new ForumThread({
-    authorId: 'user1',
+  "forum1": new ForumThread({
+    authorId: "user1",
     datePosted: new Date(),
-    content: 'first post content',
-    title: 'forum1',
+    content: "first post content",
+    title: "forum1",
     status: ForumStatus.New,
     posts: [
       {
-        authorId: 'user1',
+        authorId: "user1",
         datePosted: new Date(),
-        content: 'test followup'
-      }
-    ]
+        content: "test followup",
+      },
+    ],
   }),
-  'forum2': new ForumThread({
-    authorId: 'user2',
+  "forum2": new ForumThread({
+    authorId: "user2",
     datePosted: new Date(),
-    content: 'first post content',
-    title: 'forum2',
+    content: "first post content",
+    title: "forum2",
     status: ForumStatus.InProgress,
     posts: [
       {
-        authorId: 'user2',
+        authorId: "user2",
         datePosted: new Date(),
-        content: 'test followup'
+        content: "test followup",
       },
       {
-        authorId: 'user1',
+        authorId: "user1",
         datePosted:
         new Date(),
-        content: 'test reply'
-      }
-    ]
+        content: "test reply",
+      },
+    ],
   }),
-}
+};
 
 export async function getForums(req: Request, res: Response) {
   console.log("hit forum endpoint");
