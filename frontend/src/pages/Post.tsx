@@ -55,7 +55,7 @@ function PostPage() {
       const p = response[id] as ForumThread;
       return p;
     } catch (e) {
-      setPost({id: "-1", authorId: "-1", status: 'new', datePosted: new Date(), title: '', content: '', posts: []})
+      setPost({authorId: "-1", status: 'new', datePosted: new Date(), title: '', content: '', posts: []})
       console.error(e);
       return EmptyForumThread;
     }
