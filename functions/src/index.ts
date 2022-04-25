@@ -2,11 +2,11 @@ import express from "express";
 import * as functions from "firebase-functions";
 import {getDatabase, ref, set} from "firebase/database";
 import firebase from "../firebase";
-import cors from 'cors';
-import { getForums, postForum } from "./routes/forum";
-import { getFigures, postFigure } from "./routes/figure";
-import { getOrders, postOrder } from "./routes/order";
-import { getUsers } from "./routes/user";
+import cors from "cors";
+import {getForums, postForum} from "./routes/forum";
+import {getFigures, postFigure} from "./routes/figure";
+import {getOrders, postOrder} from "./routes/order";
+import {getUsers} from "./routes/user";
 
 
 // Start writing Firebase Functions
@@ -31,25 +31,25 @@ app.get("/dog", (req, res) => {
 
 app.get("/figure", (req, res) => {
   getFigures(req, res);
-})
+});
 
 app.get("/forum", (req, res) => {
   getForums(req, res);
-})
+});
 
 app.get("/order", (req, res) => {
   getOrders(req, res);
-})
+});
 
 app.get("/user", (req, res) => {
   getUsers(req, res);
-})
+});
 
-app.post('/figure', (req, res) => {
+app.post("/figure", (req, res) => {
   postFigure(req, res);
 });
 
-app.post('/forum', (req, res) => {
+app.post("/forum", (req, res) => {
   postForum(req, res);
 });
 

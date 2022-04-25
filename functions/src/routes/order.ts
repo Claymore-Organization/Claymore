@@ -1,53 +1,55 @@
 import {Request, Response} from "express";
-import {Order, OrderStatus} from "../models/order";
-import {TEMP_USER_DB} from "./user";
+import {Order} from "../models/order";
+import {getDatabase, ref, get, child, update, push} from "firebase/database";
+import firebase from "../../firebase";
 
-// const orderRouter = Router();
-
-const TEMP_ORDER_DB: { [key:string]: Order } = {
-  "order1": new Order({
-    customerId: "user1",
-    items: [{itemId: "figure1", quantity: 1}], address: "Address",
-    status: OrderStatus.New,
-  }),
-  "order2": new Order({
-    customerId: "user2",
-    items: [{itemId: "figure2", quantity: 2}], address: "Address",
-    status: OrderStatus.InProgress,
-  }),
-};
-
-export async function getOrders(req: Request, res: Response){
+export async function getOrders(req: Request, res: Response) {
   const orderId = req.query.orderId?.toString();
   const userId = req.query.userId?.toString();
+  const db = getDatabase(firebase);
+
+  const getOrder = async (targetOrderId: string) => {
+    let data = {};
+    await get(child(ref(db), `order/${targetOrderId}`)).then((snapshot) => {
+      if (snapshot.exists()) {
+        data = snapshot.val();
+      }
+    });
+    return new Order(data);
+  };
+
   try {
     if (orderId) {
-      // TODO: add query to find order by id
-      const order = TEMP_ORDER_DB[orderId];
-      if (order) {
-        const data = {
-          [orderId]: order,
-        };
-        res.send(data);
+      const data = await getOrder(orderId);
+      if (data) {
+        res.send({[orderId]: data});
       } else {
         res.status(404).send("Order not found");
       }
     } else if (userId) {
-      // TODO: add query to find order by user
-      const orders = TEMP_USER_DB[userId]?.orders;
-      if (orders) {
-        const data = Object.assign(
-            {},
-            ...orders.map((order) => ({[order]: TEMP_ORDER_DB[order]}))
-        );
-        res.send(data);
-      } else {
-        res.status(404).send("User not found");
-      }
+      get(child(ref(db), `user/${userId}/orders`)).then(async (snapshot) => {
+        if (snapshot.exists()) {
+          const orders = snapshot.val();
+          const userOrderPromises = [];
+          for (const orderId of orders) {
+            userOrderPromises.push(getOrder(orderId));
+          }
+          const userOrders = await Promise.all(userOrderPromises);
+          const outputDict = new Map<string, Order>();
+          let ind = 0;
+          for (const orderId of orders) {
+            outputDict.set(orderId, userOrders[ind]);
+            ind += 1;
+          }
+          res.send(Object.fromEntries(outputDict));
+        } else {
+          res.status(404).send("User not found");
+        }
+      });
     } else {
-      // TODO: add query to find all orders
-      const orders = TEMP_ORDER_DB;
-      res.send(orders);
+      get(ref(db, "order")).then((snapshot) => {
+        res.send(snapshot.val());
+      });
     }
   } catch (err) {
     console.log(err);
@@ -55,98 +57,38 @@ export async function getOrders(req: Request, res: Response){
   }
 }
 
-// orderRouter.get("/", [], async function(req: Request, res: Response) {
-//   const orderId = req.query.orderId?.toString();
-//   const userId = req.query.userId?.toString();
-//   try {
-//     if (orderId) {
-//       // TODO: add query to find order by id
-//       const order = TEMP_ORDER_DB[orderId];
-//       if (order) {
-//         const data = {
-//           [orderId]: order,
-//         };
-//         res.send(data);
-//       } else {
-//         res.status(404).send("Order not found");
-//       }
-//     } else if (userId) {
-//       // TODO: add query to find order by user
-//       const orders = TEMP_USER_DB[userId]?.orders;
-//       if (orders) {
-//         const data = Object.assign(
-//             {},
-//             ...orders.map((order) => ({[order]: TEMP_ORDER_DB[order]}))
-//         );
-//         res.send(data);
-//       } else {
-//         res.status(404).send("User not found");
-//       }
-//     } else {
-//       // TODO: add query to find all orders
-//       const orders = TEMP_ORDER_DB;
-//       res.send(orders);
-//     }
-//   } catch (err) {
-//     console.log(err);
-//     res.status(500).send(err);
-//   }
-// });
+export async function postOrder(req: Request, res: Response) {
+  let orderId = req.query.orderId?.toString();
+  try {
+    const db = getDatabase(firebase);
+    const order = new Order(req.body);
+    if (orderId == undefined) {
+      // Create a new order instead of just updating
+      const newoid = push(child(ref(db), "order")).key;
+      if (newoid == null) { // basically this can't happen
+        res.status(500).send("DB could not make a new order id");
+        return;
+      }
+      orderId = newoid;
 
-export async function postOrder(req: Request, res: Response){
-  const orderId = req.query.orderId?.toString();
-  if (orderId) {
-    // TODO: Update existing order
-    // Update existing order
-    const order = TEMP_ORDER_DB[orderId];
-    if (order) {
-      Object.assign(order, req.body);
-      const newOrder = new Order(order);
-      const data = {
-        [orderId]: newOrder,
-      };
-      res.send(data);
-    } else {
-      res.status(404).send("Order not found");
+      // Need to update the user this order was made for
+      const userId = order.customerId;
+      const userOrderRef = ref(db, `user/${userId}/orders`);
+      const customeroid = push(userOrderRef).key;
+      if (customeroid == null) {
+        res.status(500).send("DB could attach a new order to a customer");
+        return;
+      }
+      update(userOrderRef, {[customeroid]: orderId});
     }
-  } else {
-    // TODO: insert new order, update associated user
-    // New order
-    const newOrder = new Order(req.body);
-    const orderId = "order3";
+    // Update the db of orders
     const data = {
-      [orderId]: newOrder,
+      [orderId]: order,
     };
+    update(ref(db, "order"), data);
     res.send(data);
+  } catch (err) {
+    console.log(err);
+    res.status(500).send(err);
   }
 }
-
-// orderRouter.post("/", [], async function(req: Request, res: Response) {
-//   const orderId = req.query.orderId?.toString();
-//   if (orderId) {
-//     // TODO: Update existing order
-//     // Update existing order
-//     const order = TEMP_ORDER_DB[orderId];
-//     if (order) {
-//       Object.assign(order, req.body);
-//       const newOrder = new Order(order);
-//       const data = {
-//         [orderId]: newOrder,
-//       };
-//       res.send(data);
-//     } else {
-//       res.status(404).send("Order not found");
-//     }
-//   } else {
-//     // TODO: insert new order, update associated user
-//     // New order
-//     const newOrder = new Order(req.body);
-//     const orderId = "order3";
-//     const data = {
-//       [orderId]: newOrder,
-//     };
-//     res.send(data);
-//   }
-// });
-
-// export default orderRouter;
