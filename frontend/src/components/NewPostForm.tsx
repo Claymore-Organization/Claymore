@@ -13,6 +13,12 @@ function NewPostForm() {
   const [title, setTitle] = React.useState('');
   const [content, setContent] = React.useState('');
 
+  const navigate = useNavigate();
+
+  function navigateNewPost() {
+      navigate(`forum/post/${content}`);
+  }
+
   async function handleSubmit(){
     try {
       const authorId = "signedinuser";
@@ -35,13 +41,14 @@ function NewPostForm() {
       };
 
       await fetch(`${path}/forum`, requestOptions).then((res) => (res.json()));
+      setContent("");
+      setTitle("");
 
     } catch (e) {
       console.error(e);
+      setContent("");
+      setTitle("");
     }
-
-    setContent("");
-    setTitle("");
   }
 
   return (
