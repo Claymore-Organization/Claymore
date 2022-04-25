@@ -7,6 +7,17 @@ import Grid from '@mui/material/Grid';
 import TextField from '@mui/material/TextField';
 import {Button} from "@mui/material";
 import { path } from '../config';
+import ForumPost from './ForumPost';
+
+interface ForumThread {
+  id: string,
+  authorId: string,
+  datePosted: Date,
+  content: string,
+  title: string,
+  status: string,
+  posts: ForumPost[]
+}
 
 
 function NewPostForm() {
@@ -15,8 +26,8 @@ function NewPostForm() {
 
   const navigate = useNavigate();
 
-  function navigateNewPost() {
-      navigate(`forum/post/${content}`);
+  function navigateNewPost(newThreadId: string) {
+      navigate(`/forum/post/${newThreadId}`);
   }
 
   async function handleSubmit(){
@@ -40,10 +51,11 @@ function NewPostForm() {
           body: JSON.stringify(newForumThread)
       };
 
-      await fetch(`${path}/forum`, requestOptions).then((res) => (res.json()));
+      const np : Map<string, ForumThread> = await fetch(`${path}/forum`, requestOptions).then((res) => (res.json()));
+      console.log(Object.keys(np).at(0));
       setContent("");
       setTitle("");
-
+      navigateNewPost(Object.keys(np).at(0)!);
     } catch (e) {
       console.error(e);
       setContent("");
