@@ -57,5 +57,4 @@ app.post("/order", (req, res) => {
   postOrder(req, res);
 });
 
-
-export default functions.https.onRequest(app);
+export default functions.https.onRequest(app) ;
