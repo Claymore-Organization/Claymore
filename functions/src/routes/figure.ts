@@ -1,6 +1,6 @@
 import {Request, Response} from "express";
 import {Figure} from "../models/figure";
-import {getDatabase, ref, get, child, update} from "firebase/database";
+import {getDatabase, ref, get, child, update, push} from "firebase/database";
 import firebase from "../../firebase";
 
 // e.g.
@@ -33,12 +33,16 @@ export async function getFigures(req: Request, res: Response) {
 export async function postFigure(req: Request, res: Response) {
   try {
     const db = getDatabase(firebase);
-    const figureId = "figure3"; // TODO: Dynamic figure id
+    const figureId = push(child(ref(db), "figure")).key;
+      if (figureId == null) { // Should never fire.
+        res.status(500).send("DB could not make a new figure id");
+        return;
+      }
     const data = {
       [figureId]: req.body,
     };
     update(ref(db, "figure"), data);
-    res.send(new Figure(data));
+    res.send({ [figureId]: new Figure(data) });
   } catch (err) {
     console.log(err);
     res.status(500).send(err);
