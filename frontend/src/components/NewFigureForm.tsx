@@ -9,6 +9,7 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
 import {Button} from "@mui/material";
 import axios from 'axios';
+import { figure_path } from '../config';
 
 export default function NewFigureForm() {
   const [name, setName] = React.useState('');
@@ -32,7 +33,7 @@ export default function NewFigureForm() {
     console.log(data)
 
     try {
-      const sendData = axios.post('https://us-central1-claymore-d6749.cloudfunctions.net/default/figure', data);
+      const sendData = axios.post(figure_path, data);
     } catch (e) {
       console.error(e);
       setPostFail(true);
