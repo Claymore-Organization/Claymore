@@ -6,113 +6,143 @@ import { useNavigate } from 'react-router-dom';
 import TempPosts from "../assets/postsData";
 import TempMessages from "../assets/messagesData";
 import Header from '../components/Header';
+import { throws } from 'assert';
+import posts from '../assets/postsData';
+import { path } from '../config';
 
-interface Message {
-    id: number,
-    user: number,
-    content: string,
+interface User {
+  username: string,
+  image: string,
+  orders: string[]
 }
 
-interface Post {
-    id: number,
-    user: number,
-    status: string,
-    date_posted: Date,
-    title: string,
-    content: string,
-    messages: number[]
+interface ForumPost {
+  authorId: string
+  datePosted: Date
+  content: string
 }
+
+interface ForumThread {
+  authorId: string,
+  datePosted: Date,
+  content: string,
+  title: string,
+  status: string,
+  posts: ForumPost[]
+}
+
+const EmptyForumThread: ForumThread = {
+  authorId: 'Undefined User',
+  datePosted: new Date(),
+  content: 'Base post content',
+  title: 'Default post',
+  status: 'New',
+  posts: []
+};
 
 function PostPage() {
   const params = useParams();
-  const [messagesList, setMessagesList] = useState<Array<Message>>([]);
-  const [post, setPost] = useState<Post>();
+  const [post, setPost] = useState<ForumThread>(EmptyForumThread);
   const [newMessageContent, setNewMessageContent] = useState<string>('');
+  const [postId, setPostId] = useState<string>('');
+  const [userMap, setUserMap] = useState<Map<string, User>>(new Map<string, User>());
 
-  async function fetchPosts() {
+  async function fetchPost(id : string){
+    console.log("getting post with id: " + id);
     try {
-      //const response = await fetch('/posts').then((res) => (res.json()));
-      // console.log(response);
-      //setPostList(response);
+      const response = await fetch(`${path}/forum?forumId=${id}`).then((res) => (res.json()));
+      console.log(response);
+      const p = response[id] as ForumThread;
+      return p;
+    } catch (e) {
+      setPost({authorId: "-1", status: 'new', datePosted: new Date(), title: '', content: '', posts: []})
+      console.error(e);
+      return EmptyForumThread;
+    }
+    
+  }
 
-    //   setMessagesList(TempMessages);
-      const response = TempPosts;
-      return response;
-      
+  async function fetchUsers() {
+    try {
+      const response = await fetch(`${path}/user`).then((res) => (res.json()));
+      console.log(response);
+
+      const userObjMap : Map<string, User> = new Map<string, User>();
+      Object.keys(response).forEach(function(key) {
+        userObjMap.set(key, {
+          username: response[key]["username"],
+          image: response[key]["image"],
+          orders: response[key]["orders"]
+        } as User);
+      });
+
+      setUserMap(userObjMap);
     } catch (e) {
       console.error(e);
     }
-  }
-
-  async function fetchMessages(postMessageIds : number[]) {
-    try {
-      //const response = await fetch('/posts').then((res) => (res.json()));
-      // console.log(response);
-      //setPostList(response);
-
-    //   setMessagesList(TempMessages);
-      const response = TempMessages.filter(msg => postMessageIds.includes(msg.id));
-      return response;
-      
-    } catch (e) {
-      console.error(e);
-    }
-  }
-
-  async function getPost(id: number, postList: Array<Post>){
-    // post passed in via link
-    const post = postList.find(p => p.id === id);
-    if(post !== undefined) {
-      //console.log("post: ", post);
-      return post;
-    } 
-    return {id: -1, user: -1, status: 'new', date_posted: new Date(), title: '', content: '', messages: []}
   }
 
   useEffect(() => {
     const setup = async () => {
-      const postList = await fetchPosts();
-      const post = await getPost(Number(params.id), (postList as Array<Post>));
-      setPost(post);
-      const postMessageIds = post.messages;
-      const messagesList = await fetchMessages(postMessageIds);
-      setMessagesList(messagesList!)
+      const postId = "" + (params.id);
+      setPostId(postId);
+      const p = await fetchPost(postId);
+      setPost(p);
+      await fetchUsers();
     };
     setup();
   }, [params.id]);
 
-  function getUserName(userID : number){
-    if(userID === 1){
-        return "Max Dunaevschi";
+  function getUserName(userID : string){
+    if(userMap === undefined){
+      return "Undefined User bc map";
     }
-    else if(userID === 2){
-        return "Gabriel Magendzo";
+
+    const userObj = userMap.get(userID);
+    if(userObj === undefined){
+      return "Undefined User bc field";
     }
-    else if(userID === 3){
-        return "Oscar Kav";
-    }
-    else if(userID === 4){
-        return "Achilles Ecos";
-    }
-    else {
-        return "Gialon Kasha";
-    }
+    return userObj.username;
   }
 
   function getFormattedDate () {
-    if(post === undefined){
-        return 'May 30, 2022'
+    if(post !== undefined){
+      const date = post.datePosted.toString();
+      const month = date.substring(5, 7);
+      const day = date.substring(8, 10);
+      const year = date.substring(0, 4);
+      return month + " " + day + ", " + year;
     }
-
-    const date = post.date_posted.toString();
-    const month = date.substring(4, 7);
-    const day = date.substring(8, 10);
-    const year = date.substring(11, 15);
-    return month + " " + day + ", " + year;
+    return 'May 30, 2022';    
   }
 
   function handleNewMsgChange(event : React.ChangeEvent<any>) {
     setNewMessageContent(event.target.value);
+  }
+
+  async function handleSubmit(){
+    console.log("Submitted");
+    if(newMessageContent !== ""){
+        try {
+          const authorId = "signedinuser";
+          const content = newMessageContent;
+          const newPost = { "authorId": authorId, 
+                            "content": content
+                          };
+
+          const requestOptions = {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(newPost)
+          };
+
+          await fetch(`${path}/forum?forumId=${postId}`, requestOptions).then((res) => (res.json()));
+
+        } catch (e) {
+          console.error(e);
+        }
+        setNewMessageContent("");
+      }
   }
 
   return (
@@ -125,10 +155,11 @@ function PostPage() {
         <Card.Content>
         <Grid.Container>
             <Grid xs={18}>
+            <Text b h1>{}</Text>
             <Text b h1>{post?.title}</Text>
             </Grid>
             <Grid xs={6} style={{marginRight:'1em'}}>
-                <Text small>{getUserName(post!.id)}</Text>
+                <Text small>{getUserName(post.authorId)}</Text>
                 <Spacer h={.5} />
                 <Text small>{getFormattedDate()}</Text>
             </Grid>
@@ -142,13 +173,13 @@ function PostPage() {
         </Card.Content>
         </Card>
         <Spacer h={0.5} />
-        {messagesList
-            ? messagesList.map((msg) => {
+        {post?.posts
+            ? post?.posts.map((msg) => {
                 return (
                     <>
                     <Card width="90%" style={{marginLeft: '4em'}}>
                         <Card.Content>
-                            <Text small>{getUserName(msg.user)}</Text>
+                            <Text small>{getUserName(msg.authorId)}</Text>
                             <Text h3>{msg.content}</Text>
                         </Card.Content>
                     </Card>
@@ -160,14 +191,16 @@ function PostPage() {
 
         <Card width="90%" style={{marginLeft: '4em'}}>
             <Card.Content>
-                <Grid.Container gap={2} justify="center">
-                <Grid xs={18}>
-                    <input type="text" id="newMsg" name="newMessageInput" placeholder="Enter New Message" value={newMessageContent} onChange={handleNewMsgChange} style={{width:'100%', height:'5em'}}></input>
-                </Grid>
-                <Grid xs={6}>
-                    <Button type="error" style={{padding:0, marginTop: '1em', marginLeft: '2em'}}>Submit</Button>
-                </Grid>
-                </Grid.Container>
+                <form onSubmit={handleSubmit}>
+                    <Grid.Container gap={2} justify="center">
+                    <Grid xs={18}>
+                        <input type="text" id="newMsg" name="newMessageInput" placeholder="Enter New Message" value={newMessageContent} onChange={handleNewMsgChange} style={{width:'100%', height:'5em'}}></input>
+                    </Grid>
+                    <Grid xs={6}>
+                        <Button type="error" style={{paddingBottom:50, marginTop: '1em', marginLeft: '2em'}} onClick={handleSubmit}>Submit</Button>
+                    </Grid>
+                    </Grid.Container>
+                </form>
             </Card.Content>
         </Card>
       </div>

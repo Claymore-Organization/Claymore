@@ -1,52 +1,50 @@
-import {Request, Response, Router} from "express";
+import {Request, Response} from "express";
 import {Figure} from "../models/figure";
+import {getDatabase, ref, get, child, update, push} from "firebase/database";
+import firebase from "../../firebase";
 
-const figureRouter = Router();
-
-const TEMP_DB: { [key:string]: Figure } = {
-  "figure1": new Figure({
-    id: "test", name: "Melina Figure (Elden Ring)",
-    image: "image URL", price: 69.99, stock: 100, present: true,
-  }),
-  "figure2": new Figure({
-    name: "Melina Pop Figure (Elden Ring)",
-    image: "image URL", price: 39.99, stock: 50, present: true,
-  }),
-};
-
-figureRouter.get("/", [], async function(req: Request, res: Response) {
+// e.g.
+// http://localhost:5001/claymore-d6749/us-central1/default/figure?figureId=figure1
+export async function getFigures(req: Request, res: Response) {
   const figureId = req.query.figureId?.toString();
   try {
+    const db = getDatabase(firebase);
+    const dbRef = ref(db, "figure");
     if (figureId) {
-      // TODO: add query to find figure by id
-      const figure = TEMP_DB[figureId];
-      if (figure) {
-        const data = {
-          [figureId]: figure,
-        };
-        res.send(data);
-      } else {
-        res.status(404).send("Figure not found");
-      }
+      get(child(dbRef, `${figureId}`)).then((snapshot) => {
+        if (snapshot.exists()) {
+          const data = {[figureId]: new Figure(snapshot.val())};
+          res.send(data);
+        } else {
+          res.status(404).send("Figure not found");
+        }
+      });
     } else {
-      // TODO: add query for all figures
-      const figures = TEMP_DB;
-      res.send(figures);
+      get(dbRef).then((snapshot) => {
+        res.send(snapshot.val());
+      });
     }
   } catch (err) {
     console.log(err);
     res.status(500).send(err);
   }
-});
+}
 
-figureRouter.post("/", [], async function(req: Request, res: Response) {
-  // TODO: insert new figure
-  const newFigure = new Figure(req.body);
-  const figureId = "figure3";
-  const data = {
-    [figureId]: newFigure,
-  };
-  res.send(data);
-});
-
-export default figureRouter;
+export async function postFigure(req: Request, res: Response) {
+  try {
+    const db = getDatabase(firebase);
+    const figureId = push(child(ref(db), "figure")).key;
+      if (figureId == null) { // Should never fire.
+        res.status(500).send("DB could not make a new figure id");
+        return;
+      }
+    const data = {
+      [figureId]: req.body,
+    };
+    update(ref(db, "figure"), data);
+    res.send({ [figureId]: new Figure(data) });
+  } catch (err) {
+    console.log(err);
+    res.status(500).send(err);
+  }
+}

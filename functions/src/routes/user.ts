@@ -1,42 +1,29 @@
-import {Request, Response, Router} from "express";
+import {Request, Response} from "express";
 import {User} from "../models/user";
+import {getDatabase, ref, get, child} from "firebase/database";
+import firebase from "../../firebase";
 
-const userRouter = Router();
-
-export const TEMP_USER_DB: { [key:string]: User } = {
-  "user1": new User({
-    username: "testuser1",
-    image: "image URL", orders: ["order1"],
-  }),
-  "user2": new User({
-    username: "testuser2",
-    image: "image URL", orders: ["order2"],
-  }),
-};
-
-userRouter.get("/", [], async function(req: Request, res: Response) {
+export async function getUsers(req: Request, res: Response) {
   const userId = req.query.userId?.toString();
   try {
+    const db = getDatabase(firebase);
+    const dbRef = ref(db, "user");
     if (userId) {
-      // TODO: add query to find user by id
-      const user = TEMP_USER_DB[userId];
-      if (user) {
-        const data = {
-          [userId]: user,
-        };
-        res.send(data);
-      } else {
-        res.status(404).send("User not found");
-      }
+      get(child(dbRef, `${userId}`)).then((snapshot) => {
+        if (snapshot.exists()) {
+          const data = {[userId]: new User(snapshot.val())};
+          res.send(data);
+        } else {
+          res.status(404).send("User not found");
+        }
+      });
     } else {
-      // TODO: add query for all users
-      const users = TEMP_USER_DB;
-      res.send(users);
+      get(dbRef).then((snapshot) => {
+        res.send(snapshot.val());
+      });
     }
   } catch (err) {
     console.log(err);
     res.status(500).send(err);
   }
-});
-
-export default userRouter;
+}
