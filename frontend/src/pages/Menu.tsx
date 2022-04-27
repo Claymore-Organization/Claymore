@@ -18,6 +18,7 @@ interface CartItem {
 interface MenuItem {
   id: number;
   name: string;
+  image: string;
   price: number;
   classic: boolean;
 }
@@ -79,7 +80,7 @@ function App() {
                   itemId={key}
                   name={item.name}
                   price={item.price}
-                  image={getMenuImage(item.name)}
+                  image={item.image}
                   cart={cart}
                   setCart={setCart}
                   key={item.name}
@@ -97,7 +98,7 @@ function App() {
                   itemId={item.id}
                   name={item.name}
                   price={item.price}
-                  image={getMenuImage(item.name)}
+                  image={item.image}
                   cart={cart}
                   setCart={setCart}
                   key={item.name}
