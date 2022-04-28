@@ -158,13 +158,9 @@ function App() {
                 }
               })}
               <ListItem sx={{ py: 1, px: 0 }}>
-                <ListItemText primary="Delivery" />
-                <Typography variant="body2">{formatter.format(1.5)}</Typography>
-              </ListItem>
-              <ListItem sx={{ py: 1, px: 0 }}>
                 <ListItemText primary="Total" />
                 <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>
-                  {formatter.format(calculateTotal() + 1.5)}
+                  {formatter.format(calculateTotal())}
                 </Typography>
               </ListItem>
             </List>
