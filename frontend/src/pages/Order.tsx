@@ -26,6 +26,7 @@ import figureMenu from "../assets/figureMenu";
 import "./Order.css";
 import { useLocation } from "react-router-dom";
 import axios from "axios";
+import { order_path } from "../config"
 
 interface MenuItem {
   id: number;
@@ -233,20 +234,19 @@ function App() {
       customerId: Math.round(100 * Math.random()),
       items: cart,
       address: fullAddress,
+      status: "new"
     };
 
     console.log(JSON.stringify(data));
-    console.log(activeStep);
 
     // Add the following code once DB is set up
-    // try {
-    //   console.log(JSON.stringify(data));
-    //   const sendData = axios
-    //     .post("", data)
-    //   console.log(sendData);
-    // } catch (e) {
-    //   console.error(e);
-    // }
+    try {
+      const sendData = axios
+        .post(order_path, data)
+      console.log(sendData);
+    } catch (e) {
+      console.error(e);
+    }
   };
 
   const fullAddress = [address, city, state, zip, country].join(", ")
