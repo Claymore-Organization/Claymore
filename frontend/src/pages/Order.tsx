@@ -53,6 +53,11 @@ function App() {
   const [state, setState] = useState<string>("PA")
   const [zip, setZip] = useState<number>(15213)
   const [country, setCountry] = useState<string>("USA")
+  const [cardType, setCardType] = useState<string>("Visa")
+  const [cardHolder, setCardHolder] = useState<string>("Michael Hilton")
+  const [cardNumber, setCardNumber] = useState<string>("1234-1234-1234-1234")
+  const [expiryDate, setExpiryDate] = useState<string>("04/2024")
+  const [cvv, setCvv] = useState<string>("123")
 
   async function fetchMenu() {
     try {
@@ -88,10 +93,10 @@ function App() {
   }
 
   const payments = [
-    { name: "Card type", detail: "Visa" },
-    { name: "Card holder", detail: "Michael Hilton" },
-    { name: "Card number", detail: "xxxx-xxxx-xxxx-1234" },
-    { name: "Expiry date", detail: "04/2024" },
+    { name: "Card type", detail: cardType },
+    { name: "Card holder", detail: cardHolder },
+    { name: "Card number", detail: cardNumber },
+    { name: "Expiry date", detail: expiryDate },
   ];
 
   function Copyright() {
@@ -133,7 +138,18 @@ function App() {
                 setCountry={setCountry}
               />;
       case 1:
-        return <PaymentForm />;
+        return <PaymentForm 
+                cardName={cardHolder}
+                setCardName={setCardHolder}
+                cardNumber={cardNumber}
+                setCardNumber={setCardNumber}
+                cardType={cardType}
+                setCardType={setCardType}
+                expiryDate={expiryDate}
+                setExpiryDate={setExpiryDate}
+                cvv={cvv}
+                setCvv={setCvv}
+              />;
       case 2:
         return (
           <React.Fragment>
@@ -263,8 +279,7 @@ function App() {
                       Thank you for your order.
                     </Typography>
                     <Typography variant="subtitle1">
-                      {`Your order number is #54. We have emailed your order
-                      confirmation, and your order should arrive to ${fullAddress} in 15-20 minutes.`}
+                      {`Your order will be shipped to ${fullAddress}`}
                     </Typography>
                   </React.Fragment>
                 ) : (
