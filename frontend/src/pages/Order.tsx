@@ -109,7 +109,6 @@ function App() {
 
   const steps = [
     "Shipping address",
-    "Time Estimate",
     "Payment details",
     "Review your order",
   ];
@@ -134,10 +133,8 @@ function App() {
                 setCountry={setCountry}
               />;
       case 1:
-        return <TimeEstimate address={fullAddress} />;
-      case 2:
         return <PaymentForm />;
-      case 3:
+      case 2:
         return (
           <React.Fragment>
             <Typography variant="h6" gutterBottom>
