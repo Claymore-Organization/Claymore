@@ -139,8 +139,8 @@ function App() {
             </div>
             {calculateTotal() > 0 && (
               <div className="checkout">
-                <Link to="/order" state={{ cart: cart }}>
-                  <Button variant="contained">Continue to Checkout</Button>
+                <Link to="/order" state={{ cart: cart }} className="checkoutLink">
+                  <Button sx={{backgroundColor:"black"}} variant="contained">Continue to Checkout</Button>
                 </Link>
               </div>
             )}

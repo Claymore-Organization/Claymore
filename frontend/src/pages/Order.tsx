@@ -248,9 +248,10 @@ function App() {
               <Typography component="h1" variant="h4" align="center">
                 Checkout
               </Typography>
-              <Stepper activeStep={activeStep} sx={{ pt: 3, pb: 5 }}>
+              <Stepper activeStep={activeStep} sx={{ pt: 3, pb: 5}}>
                 {steps.map((label) => (
-                  <Step key={label}>
+                  <Step key={label} sx={{"& .MuiStepLabel-root .Mui-active": { color: "black" },
+                    "& .MuiStepLabel-root .Mui-completed": { color: "green" }}}>
                     <StepLabel>{label}</StepLabel>
                   </Step>
                 ))}
@@ -287,7 +288,7 @@ function App() {
                             ? handleSubmit
                             : handleNext
                         }
-                        sx={{ mt: 3, ml: 1 }}
+                        sx={{ mt: 3, ml: 1, backgroundColor: "black" }}
                       >
                         {activeStep === steps.length - 1
                           ? "Place order"
