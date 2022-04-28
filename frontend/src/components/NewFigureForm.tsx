@@ -9,47 +9,46 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
 import {Button} from "@mui/material";
 import axios from 'axios';
+import { figure_path } from '../config';
 
 export default function NewFigureForm() {
-  const [id, setId] = React.useState(-1);
   const [name, setName] = React.useState('');
+  const [img, setImg] = React.useState('');
   const [price, setPrice] = React.useState(-1.0);
   const [stock, setStock] = React.useState(-1);
+  const [present, setPresent] = React.useState(true);
+  const [postSuccess, setPostSuccess] = React.useState(false);
+  const [postFail, setPostFail] = React.useState(false); 
 
   const handleSubmit = () => {
 
-    const data = {'id': id,
+    const data = {
       'name': name,
+      'image': img,
       'price': price,
-      'current_stock': stock
+      'stock': stock,
+      'present': present
     };
 
-    // try {
-    //   const sendData = axios.post('', data);
-    // } catch (e) {
-    //   console.error(e);
-    // }
+    console.log(data)
+
+    try {
+      const sendData = axios.post(figure_path, data);
+    } catch (e) {
+      console.error(e);
+      setPostFail(true);
+      return;
+    }
+
+    setPostSuccess(true);
   };
 
   return (
     <React.Fragment>
       <Typography variant="h6" gutterBottom>
-        Post New Shop Item (Post Button only shows up if valid info is filled)
+        Add New Shop Item
       </Typography>
       <Grid container spacing={3}>
-        <Grid item xs={12} md={6}>
-          <TextField
-            required
-            id="itemId"
-            label="Item ID (Integer)"
-            fullWidth
-            variant="standard"
-            type="number"
-            onChange={(event) => {
-              setId(parseInt(event.target.value));
-            }}
-          />
-        </Grid>
         <Grid item xs={12} md={6}>
           <TextField
             required
@@ -65,8 +64,20 @@ export default function NewFigureForm() {
         <Grid item xs={12} md={6}>
           <TextField
             required
+            id="imageURL"
+            label="Image URL"
+            fullWidth
+            variant="standard"
+            onChange={(event) => {
+              setImg(event.target.value);
+            }}
+          />
+        </Grid>
+        <Grid item xs={12} md={6}>
+          <TextField
+            required
             id="price"
-            label="Item Price (Float)"
+            label="Item Price"
             fullWidth
             variant="standard"
             type="number"
@@ -88,12 +99,25 @@ export default function NewFigureForm() {
             }}
           />
         </Grid>
+        <Grid item xs={12} md={6}>
+          Is this a pre-order item?
+          <Checkbox
+            id = "present"
+            onChange={(event) => {
+              setPresent(!(event.target.checked));
+            }}
+          />
+        </Grid>
+        <Grid item xs={12}>
+          <Button disabled={!(name != '' && price > 0.0 && stock > 0)} variant="contained" onClick={handleSubmit}>Add Item</Button>
+        </Grid>
         {
-          id > 0 && name != '' && price > 0.0 && stock > 0 && (
-            <Grid item xs={12}>
-              <Button variant="contained" onClick={handleSubmit}>Post Item</Button>
-            </Grid>
-          )
+          postFail && 
+          <Typography color='red'>Failed to add item, check console</Typography>
+        }
+        {
+          postSuccess && 
+          <Typography color='green'>Item added! Check menu for update</Typography>
         }
         
       </Grid>
