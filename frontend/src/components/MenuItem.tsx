@@ -83,7 +83,7 @@ function MenuItem(props: MenuItemProps) {
             </div>
           </div>
           <div className="pic">
-            <img src={image} />
+            <img src={image} referrerPolicy="no-referrer"/>
           </div>
         </CardContent>
       </Card>
