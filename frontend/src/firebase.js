@@ -1,5 +1,6 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
+import { getAuth, GoogleAuthProvider, signInWithPopup, signOut } from "firebase/auth";
 // https://firebase.google.com/docs/web/setup#available-libraries
 
 // Your web app's Firebase configuration
@@ -14,6 +15,32 @@ const firebaseConfig = {
   appId: process.env.REACT_APP_FIREBASE_APP_ID,
 };
 
+
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
+export const auth = getAuth(app);
+
+const googleProvider = new GoogleAuthProvider();
+export const signInWithGoogle = async () => {
+  try {
+    const res = await signInWithPopup(auth, googleProvider);
+    const user = res.user;
+    console.log(user)
+    console.log(user.uid)
+  } catch (err) {
+    console.error(err);
+    alert(err.message);
+  }
+};
+
+export const logout = () => {
+  console.log('logout')
+  try {
+    signOut(auth);
+  } catch (err) {
+    console.error(err);
+    alert(err.message);
+  }
+};
+
 export default app

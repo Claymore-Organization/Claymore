@@ -1,13 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 // component imports
-import { Text, Spacer, Card, Divider } from '@geist-ui/react';
 import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Grid';
 import TextField from '@mui/material/TextField';
 import {Button} from "@mui/material";
 import { path } from '../config';
-
 
 function NewPostForm() {
   const [title, setTitle] = React.useState('');
@@ -26,8 +23,6 @@ function NewPostForm() {
         "status": "New",
         "posts": []
       }
-                  
-      console.log(newForumThread);
       const requestOptions = {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },

@@ -5,7 +5,6 @@ import { useParams } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import TempPosts from "../assets/postsData";
 import TempMessages from "../assets/messagesData";
-import Header from '../components/Header';
 import { throws } from 'assert';
 import posts from '../assets/postsData';
 import { path } from '../config';
@@ -147,7 +146,6 @@ function PostPage() {
 
   return (
     <div className='Post'>
-        <Header />
         <Spacer h={6} />
         
         <div className='PostContent'>

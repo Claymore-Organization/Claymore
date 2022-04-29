@@ -1,4 +1,3 @@
-import Header from "../components/Header";
 import { Typography } from "@mui/material";
 import "./Employee.css";
 import Payload from "../components/Payload";
@@ -88,7 +87,6 @@ function App() {
 
   return (
     <div className="App">
-      <Header />
       <div className="pageContent">
         <div className="payloadList">
           <Typography variant="h4" className="payloadHeader">
