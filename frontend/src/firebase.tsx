@@ -1,6 +1,8 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
 import { getAuth, GoogleAuthProvider, signInWithPopup, signOut } from "firebase/auth";
+import { path } from './config';
+import axios from 'axios';
 // https://firebase.google.com/docs/web/setup#available-libraries
 
 // Your web app's Firebase configuration
@@ -22,24 +24,34 @@ export const auth = getAuth(app);
 
 const googleProvider = new GoogleAuthProvider();
 export const signInWithGoogle = async () => {
-  try {
-    const res = await signInWithPopup(auth, googleProvider);
-    const user = res.user;
-    console.log(user)
-    console.log(user.uid)
-  } catch (err) {
-    console.error(err);
-    alert(err.message);
-  }
+    const firebase_response = await signInWithPopup(auth, googleProvider);
+    const firebase_user = firebase_response.user;
+    await fetch(`${path}/user?userId=${firebase_user.uid}`).then(
+      async (res) => {
+        if (res.status == 404) {
+          // If the user was not found, create a new one.
+          const newUser = {
+            userId: firebase_user.uid,
+            username: firebase_user.displayName,
+            imageurl: firebase_user.photoURL,
+          }
+          try {
+            axios.post(`${path}/user`, {}, { params: newUser })
+          } catch (err) {
+              console.error(err);
+          }
+        }
+      }
+    , (err) => {
+      console.error(err);
+    });
 };
 
 export const logout = () => {
-  console.log('logout')
   try {
     signOut(auth);
   } catch (err) {
     console.error(err);
-    alert(err.message);
   }
 };
 

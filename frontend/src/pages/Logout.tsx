@@ -11,7 +11,6 @@ function Logout() {
     if (loading) {
       return;
     }
-    console.log(user)
     if (user == null) navigate("/");
   }, [user, loading]);
   return (

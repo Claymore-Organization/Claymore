@@ -5,14 +5,17 @@ import Grid from '@mui/material/Grid';
 import TextField from '@mui/material/TextField';
 import {Button} from "@mui/material";
 import { path } from '../config';
+import { useAuthState } from "react-firebase-hooks/auth";
+import { auth } from "../firebase";
 
 function NewPostForm() {
+  const [user, loading, error] = useAuthState(auth);
   const [title, setTitle] = React.useState('');
   const [content, setContent] = React.useState('');
 
   async function handleSubmit(){
     try {
-      const authorId = "signedinuser";
+      const authorId = user?.uid;
       const datePosted = new Date();
 
       const newForumThread = {
@@ -30,7 +33,6 @@ function NewPostForm() {
       };
 
       await fetch(`${path}/forum`, requestOptions).then((res) => (res.json()));
-
     } catch (e) {
       console.error(e);
     }
@@ -72,7 +74,10 @@ function NewPostForm() {
         {
           title !== '' && content !== '' && (
             <Grid item xs={12}>
-              <Button variant="contained" onClick={handleSubmit}>New Post</Button>
+              {loading || user == null ? <p>You must be signed in to post</p> :
+                <Button variant="contained" onClick={handleSubmit}>New Post</Button>
+              }
+
             </Grid>
           )
         }
