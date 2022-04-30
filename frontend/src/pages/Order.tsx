@@ -172,13 +172,9 @@ function App() {
                 }
               })}
               <ListItem sx={{ py: 1, px: 0 }}>
-                <ListItemText primary="Delivery" />
-                <Typography variant="body2">{formatter.format(1.5)}</Typography>
-              </ListItem>
-              <ListItem sx={{ py: 1, px: 0 }}>
                 <ListItemText primary="Total" />
                 <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>
-                  {formatter.format(calculateTotal() + 1.5)}
+                  {formatter.format(calculateTotal())}
                 </Typography>
               </ListItem>
             </List>
@@ -265,9 +261,10 @@ function App() {
               <Typography component="h1" variant="h4" align="center">
                 Checkout
               </Typography>
-              <Stepper activeStep={activeStep} sx={{ pt: 3, pb: 5 }}>
+              <Stepper activeStep={activeStep} sx={{ pt: 3, pb: 5}}>
                 {steps.map((label) => (
-                  <Step key={label}>
+                  <Step key={label} sx={{"& .MuiStepLabel-root .Mui-active": { color: "black" },
+                    "& .MuiStepLabel-root .Mui-completed": { color: "green" }}}>
                     <StepLabel>{label}</StepLabel>
                   </Step>
                 ))}
@@ -303,7 +300,7 @@ function App() {
                             ? handleSubmit
                             : handleNext
                         }
-                        sx={{ mt: 3, ml: 1 }}
+                        sx={{ mt: 3, ml: 1, backgroundColor: "black" }}
                       >
                         {activeStep === steps.length - 1
                           ? "Place order"
