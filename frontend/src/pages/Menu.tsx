@@ -91,11 +91,12 @@ function App() {
           <Typography variant="h4" className="menuHeader">
             Pre-orders
           </Typography>
-          {Object.values(menu).map((item: MenuItem) => {
+          {Object.keys(menu).map((key: string) => {
+            const item: MenuItem = menu[key]
             if (!item.present) {
               return (
                 <MenuItem
-                  itemId={item.id}
+                  itemId={key}
                   name={item.name}
                   price={item.price}
                   image={item.image}
