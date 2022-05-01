@@ -1,7 +1,4 @@
-// Shop Tests
 
-
-// Forum Tests
 describe('All forum posts page tests', function () {
     beforeEach(() => {
         cy.visit('http://localhost:3000/forum')
