@@ -125,7 +125,11 @@ export default function AddressForm(props: AddressFormProps) {
             variant="standard"
             value={zip}
             onChange={(event) => {
-              setZip(parseInt(event.target.value));
+              if (event.target.value == '') {
+                setZip('')
+              } else {
+                setZip(parseInt(event.target.value));
+              }
             }}
           />
         </Grid>

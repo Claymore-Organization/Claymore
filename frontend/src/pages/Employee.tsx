@@ -20,7 +20,7 @@ interface MenuItem {
 
 function App() {
   const [orders, setOrders] = useState<Record<string, Order>>({});
-  const [menu, setMenu] = useState<any>();
+  const [menu, setMenu] = useState<Record<string, MenuItem>>({});
 
   const testOrders = [
     {
@@ -68,9 +68,8 @@ function App() {
   }, []);
 
   function getName(itemId: string) {
-    const item = menu[itemId];
-    if (item) {
-      return item.name;
+    if (itemId in menu) {
+      return menu[itemId].name;
     } else {
       return "";
     }
