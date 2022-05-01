@@ -89,7 +89,7 @@ function App() {
       <div className="pageContent">
         <div className="payloadList">
           <Typography variant="h4" className="payloadHeader">
-            Payloads
+            Orders
           </Typography>
           {Object.keys(orders).map((key: string) => {
             const order = orders[key];
