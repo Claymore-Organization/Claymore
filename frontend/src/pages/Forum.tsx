@@ -83,17 +83,20 @@ function Forum() {
       <Spacer h={2} />
 
       <Collapse.Group>
-      <Collapse title="My Posts" initialVisible={true}>
-        {myList
-          ? myList.map((post) => {
-              return (
-                <div key={post.id}>
-                    <ForumPost post={post} />
-                </div>
-              );
-            })
-          : null}
-      </Collapse>
+
+      {user
+        ? <Collapse title="My Posts" initialVisible={true}>
+            {myList
+              ? myList.map((post) => {
+                  return (
+                    <div key={post.id}>
+                        <ForumPost post={post} />
+                    </div>
+                  );
+                })
+              : null}
+          </Collapse>
+          : <></>}
   
       <Collapse title="New">
         {postList
@@ -107,17 +110,19 @@ function Forum() {
           : null}
       </Collapse>
 
-      <Collapse title="Updated">
-        {updatedList
-          ? updatedList.map((post) => {
-              return (
-                <div key={post.id}>
-                    <ForumPost post={post} />
-                </div>
-              );
-            })
-          : null}
-      </Collapse>
+      {user
+        ? <Collapse title="Updated">
+          {updatedList
+            ? updatedList.map((post) => {
+                return (
+                  <div key={post.id}>
+                      <ForumPost post={post} />
+                  </div>
+                );
+              })
+            : null}
+        </Collapse>
+        : <></>}
 
       <Collapse title="In Progress">
         {inProgressList
