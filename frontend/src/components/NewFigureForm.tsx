@@ -114,7 +114,7 @@ export default function NewFigureForm() {
         }
         {
           postSuccess && 
-          <Typography color='green'>Item added! Check menu for update</Typography>
+          <Typography color='green'>Item added! Check shop for update</Typography>
         }
         
       </Grid>
