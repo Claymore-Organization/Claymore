@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 // component imports
 import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Grid';
@@ -7,11 +8,29 @@ import {Button} from "@mui/material";
 import { path } from '../config';
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth } from "../firebase";
+import ForumPost from './ForumPost';
+
+interface ForumThread {
+  id: string,
+  authorId: string,
+  datePosted: Date,
+  content: string,
+  title: string,
+  status: string,
+  posts: ForumPost[]
+}
+
 
 function NewPostForm() {
   const [user, loading, error] = useAuthState(auth);
   const [title, setTitle] = React.useState('');
   const [content, setContent] = React.useState('');
+
+  const navigate = useNavigate();
+
+  function navigateNewPost(newThreadId: string) {
+      navigate(`/forum/post/${newThreadId}`);
+  }
 
   async function handleSubmit(){
     try {
@@ -32,13 +51,16 @@ function NewPostForm() {
           body: JSON.stringify(newForumThread)
       };
 
-      await fetch(`${path}/forum`, requestOptions).then((res) => (res.json()));
+      const np : Map<string, ForumThread> = await fetch(`${path}/forum`, requestOptions).then((res) => (res.json()));
+      console.log(Object.keys(np).at(0));
+      setContent("");
+      setTitle("");
+      navigateNewPost(Object.keys(np).at(0)!);
     } catch (e) {
       console.error(e);
+      setContent("");
+      setTitle("");
     }
-
-    setContent("");
-    setTitle("");
   }
 
   return (

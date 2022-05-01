@@ -26,6 +26,7 @@ import figureMenu from "../assets/figureMenu";
 import "./Order.css";
 import { useLocation } from "react-router-dom";
 import axios from "axios";
+import { order_path } from "../config"
 
 interface MenuItem {
   id: number;
@@ -53,6 +54,11 @@ function App() {
   const [state, setState] = useState<string>("PA")
   const [zip, setZip] = useState<number>(15213)
   const [country, setCountry] = useState<string>("USA")
+  const [cardType, setCardType] = useState<string>("Visa")
+  const [cardHolder, setCardHolder] = useState<string>("Michael Hilton")
+  const [cardNumber, setCardNumber] = useState<string>("1234-1234-1234-1234")
+  const [expiryDate, setExpiryDate] = useState<string>("04/2024")
+  const [cvv, setCvv] = useState<string>("123")
 
   async function fetchMenu() {
     try {
@@ -88,10 +94,10 @@ function App() {
   }
 
   const payments = [
-    { name: "Card type", detail: "Visa" },
-    { name: "Card holder", detail: "Michael Hilton" },
-    { name: "Card number", detail: "xxxx-xxxx-xxxx-1234" },
-    { name: "Expiry date", detail: "04/2024" },
+    { name: "Card type", detail: cardType },
+    { name: "Card holder", detail: cardHolder },
+    { name: "Card number", detail: cardNumber },
+    { name: "Expiry date", detail: expiryDate },
   ];
 
   function Copyright() {
@@ -109,7 +115,6 @@ function App() {
 
   const steps = [
     "Shipping address",
-    "Time Estimate",
     "Payment details",
     "Review your order",
   ];
@@ -134,10 +139,19 @@ function App() {
                 setCountry={setCountry}
               />;
       case 1:
-        return <TimeEstimate address={fullAddress} />;
+        return <PaymentForm 
+                cardName={cardHolder}
+                setCardName={setCardHolder}
+                cardNumber={cardNumber}
+                setCardNumber={setCardNumber}
+                cardType={cardType}
+                setCardType={setCardType}
+                expiryDate={expiryDate}
+                setExpiryDate={setExpiryDate}
+                cvv={cvv}
+                setCvv={setCvv}
+              />;
       case 2:
-        return <PaymentForm />;
-      case 3:
         return (
           <React.Fragment>
             <Typography variant="h6" gutterBottom>
@@ -158,13 +172,9 @@ function App() {
                 }
               })}
               <ListItem sx={{ py: 1, px: 0 }}>
-                <ListItemText primary="Delivery" />
-                <Typography variant="body2">{formatter.format(1.5)}</Typography>
-              </ListItem>
-              <ListItem sx={{ py: 1, px: 0 }}>
                 <ListItemText primary="Total" />
                 <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>
-                  {formatter.format(calculateTotal() + 1.5)}
+                  {formatter.format(calculateTotal())}
                 </Typography>
               </ListItem>
             </List>
@@ -220,20 +230,19 @@ function App() {
       customerId: Math.round(100 * Math.random()),
       items: cart,
       address: fullAddress,
+      status: "new"
     };
 
     console.log(JSON.stringify(data));
-    console.log(activeStep);
 
     // Add the following code once DB is set up
-    // try {
-    //   console.log(JSON.stringify(data));
-    //   const sendData = axios
-    //     .post("", data)
-    //   console.log(sendData);
-    // } catch (e) {
-    //   console.error(e);
-    // }
+    try {
+      const sendData = axios
+        .post(order_path, data)
+      console.log(sendData);
+    } catch (e) {
+      console.error(e);
+    }
   };
 
   const fullAddress = [address, city, state, zip, country].join(", ")
@@ -252,9 +261,10 @@ function App() {
               <Typography component="h1" variant="h4" align="center">
                 Checkout
               </Typography>
-              <Stepper activeStep={activeStep} sx={{ pt: 3, pb: 5 }}>
+              <Stepper activeStep={activeStep} sx={{ pt: 3, pb: 5}}>
                 {steps.map((label) => (
-                  <Step key={label}>
+                  <Step key={label} sx={{"& .MuiStepLabel-root .Mui-active": { color: "black" },
+                    "& .MuiStepLabel-root .Mui-completed": { color: "green" }}}>
                     <StepLabel>{label}</StepLabel>
                   </Step>
                 ))}
@@ -266,8 +276,7 @@ function App() {
                       Thank you for your order.
                     </Typography>
                     <Typography variant="subtitle1">
-                      {`Your order number is #54. We have emailed your order
-                      confirmation, and your order should arrive to ${fullAddress} in 15-20 minutes.`}
+                      {`Your order will be shipped to ${fullAddress}`}
                     </Typography>
                   </React.Fragment>
                 ) : (
@@ -291,7 +300,7 @@ function App() {
                             ? handleSubmit
                             : handleNext
                         }
-                        sx={{ mt: 3, ml: 1 }}
+                        sx={{ mt: 3, ml: 1, backgroundColor: "black" }}
                       >
                         {activeStep === steps.length - 1
                           ? "Place order"

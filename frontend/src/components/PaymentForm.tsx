@@ -5,7 +5,21 @@ import TextField from '@mui/material/TextField';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
 
-export default function PaymentForm() {
+interface PaymentFormProps {
+  cardName: string;
+  setCardName: any;
+  cardNumber: string;
+  setCardNumber: any;
+  cardType: string;
+  setCardType: any;
+  expiryDate: string;
+  setExpiryDate: any;
+  cvv: string;
+  setCvv: any;
+}
+
+export default function PaymentForm(props: PaymentFormProps) {
+  const {cardType, setCardType, cardName, setCardName, cardNumber, setCardNumber, expiryDate, setExpiryDate, cvv, setCvv} = props;
   return (
     <React.Fragment>
       <Typography variant="h6" gutterBottom>
@@ -20,6 +34,10 @@ export default function PaymentForm() {
             fullWidth
             autoComplete="cc-name"
             variant="standard"
+            value={cardName}
+            onChange={(event) => {
+              setCardName(event.target.value);
+            }}
           />
         </Grid>
         <Grid item xs={12} md={6}>
@@ -30,6 +48,10 @@ export default function PaymentForm() {
             fullWidth
             autoComplete="cc-number"
             variant="standard"
+            value={cardNumber}
+            onChange={(event) => {
+              setCardNumber(event.target.value);
+            }}
           />
         </Grid>
         <Grid item xs={12} md={6}>
@@ -40,6 +62,10 @@ export default function PaymentForm() {
             fullWidth
             autoComplete="cc-exp"
             variant="standard"
+            value={expiryDate}
+            onChange={(event) => {
+              setExpiryDate(event.target.value);
+            }}
           />
         </Grid>
         <Grid item xs={12} md={6}>
@@ -51,6 +77,10 @@ export default function PaymentForm() {
             fullWidth
             autoComplete="cc-csc"
             variant="standard"
+            value={cvv}
+            onChange={(event) => {
+              setCvv(event.target.value);
+            }}
           />
         </Grid>
         <Grid item xs={12}>

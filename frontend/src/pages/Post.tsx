@@ -131,10 +131,10 @@ function PostPage() {
           };
 
           await fetch(`${path}/forum?forumId=${postId}`, requestOptions).then((res) => (res.json()));
-
         } catch (e) {
           console.error(e);
         }
+        setNewMessageContent("");
         window.location.reload();
       }
   }

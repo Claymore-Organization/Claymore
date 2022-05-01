@@ -129,21 +129,16 @@ function App() {
           </div>
           <div className="cartFooter">
             <div className="cartRow">
-              <Typography variant="body1">Delivery</Typography>
-              <div className="dash" />
-              <Typography variant="body1">{formatter.format(1.5)}</Typography>
-            </div>
-            <div className="cartRow">
               <Typography variant="body1">Total</Typography>
               <div className="dash" />
               <Typography variant="body1">
-                {formatter.format(calculateTotal() + 1.5)}
+                {formatter.format(calculateTotal())}
               </Typography>
             </div>
-            {cart.length > 0 && (
+            {calculateTotal() > 0 && (
               <div className="checkout">
-                <Link to="/order" state={{ cart: cart }}>
-                  <Button variant="contained">Continue to Checkout</Button>
+                <Link to="/order" state={{ cart: cart }} className="checkoutLink">
+                  <Button sx={{backgroundColor:"black"}} variant="contained">Continue to Checkout</Button>
                 </Link>
               </div>
             )}

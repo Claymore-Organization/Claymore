@@ -56,3 +56,7 @@
 .checkout {
   margin-top: 12px;
 }
+
+.checkoutLink {
+  text-decoration: none;
+}
