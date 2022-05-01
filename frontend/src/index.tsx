@@ -13,12 +13,16 @@ import OrderPage from './pages/Order';
 import EmployeePage from './pages/Employee'
 import AddFigurePage from './pages/AddFigure'
 import NewPostPage from './pages/NewPost'
-
+import Login from './pages/Login'
+import Logout from './pages/Logout'
+import Header from './components/Header';
 import reportWebVitals from './reportWebVitals';
 import Forum from './pages/Forum';
 import PostPage from './pages/Post';
 
 ReactDOM.render(
+  <div>
+  <Header></Header>
   <BrowserRouter>
     <Routes>
       <Route path="/" element={<App />} />
@@ -28,12 +32,16 @@ ReactDOM.render(
       <Route path="employee" element={<EmployeePage />} />
       <Route path="addFigure" element={<AddFigurePage />} />
       <Route path="newPost" element={<NewPostPage />} />
+      <Route path="login" element={<Login />} />
+      <Route path="logout" element={<Logout />} />
       <Route path="forum" element={<Forum />} />
       <Route path="forum/post" element={<PostPage />}>
           <Route path=":id" element={<PostPage />} />
         </Route>
     </Routes>
-  </BrowserRouter>,
+    </BrowserRouter>
+    </div>,
+    
   document.getElementById('root')
 );
 

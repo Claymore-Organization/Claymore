@@ -34,15 +34,15 @@ export async function postFigure(req: Request, res: Response) {
   try {
     const db = getDatabase(firebase);
     const figureId = push(child(ref(db), "figure")).key;
-      if (figureId == null) { // Should never fire.
-        res.status(500).send("DB could not make a new figure id");
-        return;
-      }
+    if (figureId == null) { // Should never fire.
+      res.status(500).send("DB could not make a new figure id");
+      return;
+    }
     const data = {
       [figureId]: req.body,
     };
     update(ref(db, "figure"), data);
-    res.send({ [figureId]: new Figure(data) });
+    res.send({[figureId]: new Figure(data)});
   } catch (err) {
     console.log(err);
     res.status(500).send(err);

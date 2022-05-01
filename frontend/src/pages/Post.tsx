@@ -2,13 +2,9 @@ import React, { useEffect, useState } from 'react';
 // component imports
 import { Grid, Text, Button, Spacer, Card, Divider, Image } from '@geist-ui/react';
 import { useParams } from 'react-router-dom';
-import { useNavigate } from 'react-router-dom';
-import TempPosts from "../assets/postsData";
-import TempMessages from "../assets/messagesData";
-import Header from '../components/Header';
-import { throws } from 'assert';
-import posts from '../assets/postsData';
 import { path } from '../config';
+import { useAuthState } from "react-firebase-hooks/auth";
+import { auth } from "../firebase";
 
 interface User {
   username: string,
@@ -46,9 +42,9 @@ function PostPage() {
   const [newMessageContent, setNewMessageContent] = useState<string>('');
   const [postId, setPostId] = useState<string>('');
   const [userMap, setUserMap] = useState<Map<string, User>>(new Map<string, User>());
+  const [user, loading, error] = useAuthState(auth);
 
   async function fetchPost(id : string){
-    console.log("getting post with id: " + id);
     try {
       const response = await fetch(`${path}/forum?forumId=${id}`).then((res) => (res.json()));
       console.log(response);
@@ -65,7 +61,6 @@ function PostPage() {
   async function fetchUsers() {
     try {
       const response = await fetch(`${path}/user`).then((res) => (res.json()));
-      console.log(response);
 
       const userObjMap : Map<string, User> = new Map<string, User>();
       Object.keys(response).forEach(function(key) {
@@ -121,10 +116,9 @@ function PostPage() {
   }
 
   async function handleSubmit(){
-    console.log("Submitted");
     if(newMessageContent !== ""){
         try {
-          const authorId = "signedinuser";
+          const authorId = user?.uid;
           const content = newMessageContent;
           const newPost = { "authorId": authorId, 
                             "content": content
@@ -147,7 +141,6 @@ function PostPage() {
 
   return (
     <div className='Post'>
-        <Header />
         <Spacer h={6} />
         
         <div className='PostContent'>
@@ -178,7 +171,7 @@ function PostPage() {
                 return (
                     <>
                     <Card width="90%" style={{marginLeft: '4em'}}>
-                        <Card.Content>
+                      <Card.Content>
                             <Text small>{getUserName(msg.authorId)}</Text>
                             <Text h3>{msg.content}</Text>
                         </Card.Content>
@@ -188,21 +181,22 @@ function PostPage() {
                 );
             })
             : null}
-
-        <Card width="90%" style={{marginLeft: '4em'}}>
+        {loading || user == null ? <p>You must be signed in to post</p> :
+          <Card width="90%" style={{ marginLeft: '4em' }}>
             <Card.Content>
-                <form onSubmit={handleSubmit}>
-                    <Grid.Container gap={2} justify="center">
-                    <Grid xs={18}>
-                        <input type="text" id="newMsg" name="newMessageInput" placeholder="Enter New Message" value={newMessageContent} onChange={handleNewMsgChange} style={{width:'100%', height:'5em'}}></input>
-                    </Grid>
-                    <Grid xs={6}>
-                        <Button type="error" style={{paddingBottom:50, marginTop: '1em', marginLeft: '2em'}} onClick={handleSubmit}>Submit</Button>
-                    </Grid>
-                    </Grid.Container>
-                </form>
+              <form onSubmit={handleSubmit}>
+                <Grid.Container gap={2} justify="center">
+                  <Grid xs={18}>
+                    <input type="text" id="newMsg" name="newMessageInput" placeholder="Enter New Message" value={newMessageContent} onChange={handleNewMsgChange} style={{ width: '100%', height: '5em' }}></input>
+                  </Grid>
+                  <Grid xs={6}>
+                    <Button type="error" style={{ paddingBottom: 50, marginTop: '1em', marginLeft: '2em' }} onClick={handleSubmit}>Submit</Button>
+                  </Grid>
+                </Grid.Container>
+              </form>
             </Card.Content>
-        </Card>
+          </Card>
+          }
       </div>
       <Spacer h={3} />
     </div>

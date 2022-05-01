@@ -1,9 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Spacer, Button } from '@geist-ui/react';
 import ForumPost from '../components/ForumPost';
-import TempPosts from "../assets/postsData";
-import TempMessages from "../assets/messagesData";
-import Header from '../components/Header';
 import { Collapse } from '@geist-ui/core';
 import { useNavigate } from 'react-router-dom';
 import { path } from '../config';
@@ -36,7 +33,6 @@ function Forum() {
   async function fetchPosts() {
     try {
       const response = await fetch(`${path}/forum`).then((res) => (res.json()));
-      console.log(response);
       const postObjList : Array<ForumThread> = [];
       Object.keys(response).forEach(function(key) {
         postObjList.push({
@@ -49,7 +45,6 @@ function Forum() {
           posts: (response[key]["posts"])
         } as ForumThread);
       });
-      console.log(postObjList);
       setPostList(postObjList);
     } catch (e) {
       console.error(e);
@@ -63,7 +58,6 @@ function Forum() {
   return (
     
     <div className='AllPosts'>
-      <Header />
       <Spacer h={6} />
 
       <Button auto scale={1.5} type="success" style={{ textTransform: 'uppercase', fontWeight: 'bold', textAlign: 'center', paddingBottom: '60px', marginLeft: '36.5em'}} onClick={navigateNewPostPage}>New Post</Button>
@@ -79,7 +73,7 @@ function Forum() {
             return 0;
           }).map((post) => {
               return (
-                <div>
+                <div key={post.id}>
                     <ForumPost post={post} />
                 </div>
               );
@@ -91,7 +85,7 @@ function Forum() {
         {postList
           ? postList.filter(post => post.status === "New").map((post) => {
               return (
-                <div>
+                <div key={post.id}>
                     <ForumPost post={post} />
                 </div>
               );
@@ -103,7 +97,7 @@ function Forum() {
         {postList
           ? postList.filter(post => post.status === "In Progress").map((post) => {
               return (
-                <div>
+                <div key={post.id}>
                     <ForumPost post={post} />
                 </div>
               );
@@ -115,7 +109,7 @@ function Forum() {
         {postList
           ? postList.filter(post => post.status === "In Progress").map((post) => {
               return (
-                <div>
+                <div key={post.id}>
                     <ForumPost post={post} />
                 </div>
               );
@@ -127,7 +121,7 @@ function Forum() {
         {postList
           ? postList.filter(post => post.status === "Completed").map((post) => {
               return (
-                <div>
+                <div key={post.id}>
                     <ForumPost post={post} />
                 </div>
               );
