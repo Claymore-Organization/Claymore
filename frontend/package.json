@@ -33,7 +33,8 @@
     "build": "react-scripts build",
     "test": "./node_modules/.bin/cypress open",
     "preview": "react-scripts build && firebase --project=claymore-d6749 emulators:start",
-    "deploy": "react-scripts build && firebase deploy --only hosting"
+    "deploy": "react-scripts build && firebase deploy --only hosting",
+    "cypress:open": "cypress open"
   },
   "browserslist": {
     "production": [

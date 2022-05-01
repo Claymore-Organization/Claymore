@@ -71,7 +71,7 @@ function Forum() {
       <Spacer h={2} />
 
       <Collapse.Group>
-      <Collapse title="My Posts" initialVisible={true}>
+      <Collapse title="My Posts" id="myposts" initialVisible={true}>
         {postList
           ? postList.filter(post => post.authorId === "author1").sort(function(o1, o2) {
             if(o1.datePosted > o2.datePosted) return -1;
@@ -87,7 +87,7 @@ function Forum() {
           : null}
       </Collapse>
   
-      <Collapse title="New">
+      <Collapse title="New" id="newposts">
         {postList
           ? postList.filter(post => post.status === "New").map((post) => {
               return (
@@ -99,7 +99,7 @@ function Forum() {
           : null}
       </Collapse>
 
-      <Collapse title="Updated">
+      <Collapse title="Updated" id="updposts">
         {postList
           ? postList.filter(post => post.status === "In Progress").map((post) => {
               return (
@@ -111,7 +111,7 @@ function Forum() {
           : null}
       </Collapse>
 
-      <Collapse title="In Progress">
+      <Collapse title="In Progress" id="inprogposts">
         {postList
           ? postList.filter(post => post.status === "In Progress").map((post) => {
               return (
@@ -123,7 +123,7 @@ function Forum() {
           : null}
       </Collapse>
 
-      <Collapse title="Completed">
+      <Collapse title="Completed" id="compposts">
         {postList
           ? postList.filter(post => post.status === "Completed").map((post) => {
               return (

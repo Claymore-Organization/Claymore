@@ -76,7 +76,7 @@ const ForumPost = (props: PostItemProps) => {
 
   return (
     <div>
-        <Card width="70%" style={{marginLeft: '13em'}}>
+        <Card width="70%" id={`fp${post.id}`} style={{marginLeft: '13em'}}>
             <Image src="https://user-images.githubusercontent.com/11304944/76085431-fd036480-5fec-11ea-8412-9e581425344a.png"
             height="200px" width="400px" draggable={false} />
             <Text h4 mb={0}><Link to={`post/${post.id}`}>{post.title}</Link></Text>
