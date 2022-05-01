@@ -4,6 +4,8 @@ import ForumPost from '../components/ForumPost';
 import { Collapse } from '@geist-ui/core';
 import { useNavigate } from 'react-router-dom';
 import { path } from '../config';
+import { useAuthState } from "react-firebase-hooks/auth";
+import { auth } from "../firebase";
 
 interface Post {
   authorId: string
@@ -23,6 +25,7 @@ interface ForumThread {
 
 function Forum() {
   const [postList, setPostList] = useState<Array<ForumThread>>([]);
+  const [user, loading, error] = useAuthState(auth);
 
   const navigate = useNavigate();
 
@@ -51,9 +54,24 @@ function Forum() {
     }
   }
 
+
   useEffect(() => {
     fetchPosts();
   }, []);
+
+  function filterUpdated(post: ForumThread) {
+    // A thread is updated if someone else has replied since
+    if (!user) {
+      return false;
+    }
+    const posts = post.posts;
+    const users = posts.map(post => post.authorId);
+    return (post.authorId === user.uid || users.includes(user.uid)) && posts[posts.length - 1].authorId !== user.uid;
+  }
+
+  const myList = postList?.filter(post => user && user.uid === post.authorId);
+  const updatedList = postList?.filter(post => post.status === "In Progress" && filterUpdated(post));
+  const inProgressList = postList?.filter(post => post.status === "In Progress" && !filterUpdated(post));
 
   return (
     
@@ -65,21 +83,20 @@ function Forum() {
       <Spacer h={2} />
 
       <Collapse.Group>
-      <Collapse title="My Posts" initialVisible={true}>
-        {postList
-          ? postList.filter(post => post.authorId === "author1").sort(function(o1, o2) {
-            if(o1.datePosted > o2.datePosted) return -1;
-            if(o1.datePosted < o2.datePosted) return 1;
-            return 0;
-          }).map((post) => {
-              return (
-                <div key={post.id}>
-                    <ForumPost post={post} />
-                </div>
-              );
-            })
-          : null}
-      </Collapse>
+
+      {user
+        ? <Collapse title="My Posts" initialVisible={true}>
+            {myList
+              ? myList.map((post) => {
+                  return (
+                    <div key={post.id}>
+                        <ForumPost post={post} />
+                    </div>
+                  );
+                })
+              : null}
+          </Collapse>
+          : <></>}
   
       <Collapse title="New">
         {postList
@@ -93,21 +110,23 @@ function Forum() {
           : null}
       </Collapse>
 
-      <Collapse title="Updated">
-        {postList
-          ? postList.filter(post => post.status === "In Progress").map((post) => {
-              return (
-                <div key={post.id}>
-                    <ForumPost post={post} />
-                </div>
-              );
-            })
-          : null}
-      </Collapse>
+      {user
+        ? <Collapse title="Updated">
+          {updatedList
+            ? updatedList.map((post) => {
+                return (
+                  <div key={post.id}>
+                      <ForumPost post={post} />
+                  </div>
+                );
+              })
+            : null}
+        </Collapse>
+        : <></>}
 
       <Collapse title="In Progress">
-        {postList
-          ? postList.filter(post => post.status === "In Progress").map((post) => {
+        {inProgressList
+          ? inProgressList.map((post) => {
               return (
                 <div key={post.id}>
                     <ForumPost post={post} />
