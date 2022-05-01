@@ -1,5 +1,5 @@
 import {Request, Response} from "express";
-import {ForumPost, ForumThread} from "../models/forum";
+import {ForumPost, ForumStatus, ForumThread} from "../models/forum";
 import {getDatabase, ref, get, child, update, push} from "firebase/database";
 import firebase from "../../firebase";
 
@@ -39,6 +39,10 @@ export async function postForum(req: Request, res: Response) {
         if (snapshot.exists()) {
           const forum = new ForumThread(snapshot.val());
           const post = new ForumPost(req.body);
+          // Update status to in progress when non-author replies
+          if (forum.authorId !== post.authorId) {
+            forum.status = ForumStatus.InProgress;
+          }
           forum.addPost(post);
           update(dbRef, forum);
           res.send(forum);
