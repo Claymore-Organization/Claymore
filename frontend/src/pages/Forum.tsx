@@ -60,13 +60,13 @@ function Forum() {
   }, []);
 
   function filterUpdated(post: ForumThread) {
-    // A thread is updated if the author has replied but is not the last reply
+    // A thread is updated if someone else has replied since
     if (!user) {
       return false;
     }
     const posts = post.posts;
     const users = posts.map(post => post.authorId);
-    return users.includes(user.uid) && posts[posts.length - 1].authorId !== user.uid;
+    return (post.authorId === user.uid || users.includes(user.uid)) && posts[posts.length - 1].authorId !== user.uid;
   }
 
   const myList = postList?.filter(post => user && user.uid === post.authorId);
