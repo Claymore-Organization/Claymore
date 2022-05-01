@@ -83,7 +83,7 @@ const ForumPost = (props: PostItemProps) => {
             
             <Text type="secondary" small>{uname}</Text>
             <Card.Footer>
-                <Text h4 mb={0}>{post.content}</Text>
+                <Text h4 mb={0}>{post.content.split('img:')[0]}</Text>
             </Card.Footer>
         </Card>
         <Spacer h={3} />
