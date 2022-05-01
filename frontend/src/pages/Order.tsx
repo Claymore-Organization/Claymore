@@ -229,8 +229,10 @@ function App() {
   const handleSubmit = () => {
     handleNext();
 
+    const customerId = user ? user.id : "guest"
+
     const data = {
-      customerId: user?.uid,
+      customerId: customerId,
       items: cart,
       address: fullAddress,
       status: "new"
