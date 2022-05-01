@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import { path } from '../config';
 
 
-interface User {
+export interface User {
     id: string,
     username: string,
     image: string,
@@ -35,50 +35,50 @@ interface PostItemProps {
 
 const ForumPost = (props: PostItemProps) => {
   const { post } = props;
-  const [uname, setUname] = useState<string>("");
+  const [uname, setUname] = useState<string>("Anonymous");
+  const [image, setImage] = useState<string>("https://user-images.githubusercontent.com/11304944/76085431-fd036480-5fec-11ea-8412-9e581425344a.png");
 
-  async function fetchUser(){
-    try {
-        const response = await fetch(`${path}/user?userId=${post.authorId}`).then((res) => (res.json()));
-        let user : User = {id: "", username: "", image:"", orders:[]}; 
-        Object.keys(response).forEach(function(key) {
-            user = {
-              id: key,
-              username: response[key]["username"],
-              image: response[key]["image"],
-              orders: response[key]["orders"],
-            };
-          });
-        return user;
-
-      } catch (e) {
+  async function fetchUser() {
+    return await fetch(`${path}/user?userId=${post.authorId}`).then(
+      (res) => {
+        return res.json()
+      },
+      (e) => {
         console.error(e);
         return undefined;
       }
-  }
-
-  async function getUserName(){
-    const user = await fetchUser();
-    if(user === undefined){
-        console.log("user undefined");
-        return "Undefined User";
-    }
-    return user.username;
+    ).then((userid_to_data_map) => {
+      const id = Object.keys(userid_to_data_map)[0]
+      const userdata = userid_to_data_map[id]
+      console.log(userdata)
+      const user: User = {
+        id: userdata["id"],
+        username: userdata["username"],
+        image: userdata["image"],
+        orders: userdata["orders"],
+      };
+      return user;
+    }, (e) => {
+        console.error(e);
+        return undefined;
+    });
   }
 
   useEffect(() => {
     const setup = async () => {
-        const uname = await getUserName();
-        setUname(uname);
+      const user = await fetchUser();
+      if (user !== undefined) {
+        setUname(user.username)
+        setImage(user.image)
+      }
       };
       setup();
   }, []);
 
   return (
     <div>
-        <Card width="70%" id={`fp${post.id}`} style={{marginLeft: '13em'}}>
-            <Image src="https://user-images.githubusercontent.com/11304944/76085431-fd036480-5fec-11ea-8412-9e581425344a.png"
-            height="200px" width="400px" draggable={false} />
+        <Card width="70%" style={{marginLeft: '13em'}}>
+            <Image src={image} height="200px" width="400px" draggable={false} />
             <Text h4 mb={0}><Link to={`post/${post.id}`}>{post.title}</Link></Text>
             
             <Text type="secondary" small>{uname}</Text>

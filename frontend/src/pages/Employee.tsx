@@ -1,4 +1,3 @@
-import Header from "../components/Header";
 import { Typography } from "@mui/material";
 import "./Employee.css";
 import Payload from "../components/Payload";
@@ -21,7 +20,7 @@ interface MenuItem {
 
 function App() {
   const [orders, setOrders] = useState<Record<string, Order>>({});
-  const [menu, setMenu] = useState<any>();
+  const [menu, setMenu] = useState<Record<string, MenuItem>>({});
 
   const testOrders = [
     {
@@ -69,9 +68,8 @@ function App() {
   }, []);
 
   function getName(itemId: string) {
-    const item = menu[itemId];
-    if (item) {
-      return item.name;
+    if (itemId in menu) {
+      return menu[itemId].name;
     } else {
       return "";
     }
@@ -88,7 +86,6 @@ function App() {
 
   return (
     <div className="App">
-      <Header />
       <div className="pageContent">
         <div className="payloadList">
           <Typography variant="h4" className="payloadHeader">

@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 // component imports
-import { Text, Spacer, Card, Divider } from '@geist-ui/react';
 import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Grid';
 import TextField from '@mui/material/TextField';
 import {Button} from "@mui/material";
 import { path } from '../config';
+import { useAuthState } from "react-firebase-hooks/auth";
+import { auth } from "../firebase";
 import ForumPost from './ForumPost';
 
 interface ForumThread {
@@ -21,6 +22,7 @@ interface ForumThread {
 
 
 function NewPostForm() {
+  const [user, loading, error] = useAuthState(auth);
   const [title, setTitle] = React.useState('');
   const [content, setContent] = React.useState('');
 
@@ -32,7 +34,7 @@ function NewPostForm() {
 
   async function handleSubmit(){
     try {
-      const authorId = "signedinuser";
+      const authorId = user?.uid;
       const datePosted = new Date();
 
       const newForumThread = {
@@ -43,8 +45,6 @@ function NewPostForm() {
         "status": "New",
         "posts": []
       }
-                  
-      console.log(newForumThread);
       const requestOptions = {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -96,7 +96,10 @@ function NewPostForm() {
         {
           title !== '' && content !== '' && (
             <Grid item xs={12}>
-              <Button variant="contained" onClick={handleSubmit}>New Post</Button>
+              {loading || user == null ? <p>You must be signed in to post</p> :
+                <Button variant="contained" onClick={handleSubmit}>New Post</Button>
+              }
+
             </Grid>
           )
         }

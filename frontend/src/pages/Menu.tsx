@@ -2,7 +2,6 @@
 // @ts-nocheck
 
 import React, { useState, useEffect } from "react";
-import Header from "../components/Header";
 import MenuItem from "../components/MenuItem";
 import { Typography, Button } from "@mui/material";
 import getMenuImage from "../assets/menu";
@@ -66,7 +65,6 @@ function App() {
 
   return (
     <div className="App">
-      <Header />
       <div className="pageContent">
         <div className="menuGrid">
           <Typography variant="h4" className="menuHeader">
@@ -91,11 +89,12 @@ function App() {
           <Typography variant="h4" className="menuHeader">
             Pre-orders
           </Typography>
-          {Object.values(menu).map((item: MenuItem) => {
+          {Object.keys(menu).map((key: string) => {
+            const item: MenuItem = menu[key]
             if (!item.present) {
               return (
                 <MenuItem
-                  itemId={item.id}
+                  itemId={key}
                   name={item.name}
                   price={item.price}
                   image={item.image}
