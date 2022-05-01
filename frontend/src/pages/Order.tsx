@@ -27,6 +27,8 @@ import "./Order.css";
 import { useLocation } from "react-router-dom";
 import axios from "axios";
 import { order_path } from "../config"
+import { useAuthState } from "react-firebase-hooks/auth";
+import { auth } from "../firebase";
 
 interface MenuItem {
   id: number;
@@ -59,6 +61,7 @@ function App() {
   const [cardNumber, setCardNumber] = useState<string>("1234-1234-1234-1234")
   const [expiryDate, setExpiryDate] = useState<string>("04/2024")
   const [cvv, setCvv] = useState<string>("123")
+  const [user, loading, error] = useAuthState(auth);
 
   async function fetchMenu() {
     try {
@@ -227,7 +230,7 @@ function App() {
     handleNext();
 
     const data = {
-      customerId: Math.round(100 * Math.random()),
+      customerId: user?.uid,
       items: cart,
       address: fullAddress,
       status: "new"
