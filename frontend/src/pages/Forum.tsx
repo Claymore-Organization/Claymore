@@ -98,7 +98,7 @@ function Forum() {
           </Collapse>
           : <></>}
   
-      <Collapse title="New">
+      <Collapse title="New" id="newposts">
         {postList
           ? postList.filter(post => post.status === "New").map((post) => {
               return (
@@ -136,7 +136,7 @@ function Forum() {
           : null}
       </Collapse>
 
-      <Collapse title="Completed">
+      <Collapse title="Completed" id="compposts">
         {postList
           ? postList.filter(post => post.status === "Completed").map((post) => {
               return (

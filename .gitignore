@@ -15,8 +15,6 @@ Icon
 functions/lib
 # Thumbnails
 ._*
-frontend/cypress
-frontend/cypress.json
 
 # Files that might appear in the root of a volume
 .DocumentRevisions-V100
