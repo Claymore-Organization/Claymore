@@ -160,9 +160,11 @@ function PostPage() {
         </Card.Content>
         <Divider h="1px" my={0} />
         <Card.Content>
-            <Text p>{post?.content}</Text>
-            <Image src="https://user-images.githubusercontent.com/11304944/76085431-fd036480-5fec-11ea-8412-9e581425344a.png"
-   height="200px" width="400px" draggable={false} />
+            <Text p>{post?.content.split("img:")[0]}</Text>
+            {post?.content.split("img:").length > 1 && <Image src={post?.content.split("img:")[1]}
+   height="200px" width="400px" draggable={false} />}
+            {post?.content.split("img:").length === 1 && <Image src="https://user-images.githubusercontent.com/11304944/76085431-fd036480-5fec-11ea-8412-9e581425344a.png"
+   height="200px" width="400px" draggable={false} />}
         </Card.Content>
         </Card>
         <Spacer h={0.5} />

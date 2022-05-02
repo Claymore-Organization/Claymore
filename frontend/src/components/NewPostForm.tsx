@@ -25,6 +25,7 @@ function NewPostForm() {
   const [user, loading, error] = useAuthState(auth);
   const [title, setTitle] = React.useState('');
   const [content, setContent] = React.useState('');
+  const [image, setImage] = useState<string>("https://user-images.githubusercontent.com/11304944/76085431-fd036480-5fec-11ea-8412-9e581425344a.png");
 
   const navigate = useNavigate();
 
@@ -36,11 +37,12 @@ function NewPostForm() {
     try {
       const authorId = user?.uid;
       const datePosted = new Date();
+      const threadBody = content + "img:" + image;
 
       const newForumThread = {
         "authorId": authorId,
         "datePosted": datePosted,
-        "content": content,
+        "content": threadBody,
         "title": title,
         "status": "New",
         "posts": []
@@ -90,6 +92,18 @@ function NewPostForm() {
             variant="standard"
             onChange={(event) => {
               setContent(event.target.value);
+            }}
+          />
+        </Grid>
+        <Grid item xs={12} md={6}>
+          <TextField
+            required
+            id="postImg"
+            label="Optional Image"
+            fullWidth
+            variant="standard"
+            onChange={(event) => {
+              setImage(event.target.value);
             }}
           />
         </Grid>
